@@ -1,7 +1,7 @@
 # Site settings
 title: BY Blog
 SEOTitle: xpx的博客 | BY Blog
-header-img: img/post-bg-desk.jpg
+# header-img: img/post-bg-desk.jpg
 email: xuepeixin2016@gmail.com
 description: "Do something different."
 keyword: "xpx的博客 无人驾驶 计算机图形学 读书"
@@ -97,8 +97,8 @@ service-worker: true
 
 
 # Friends
-friends: [
-    {
+# friends: [
+#     {
     #     title: "WY",
     #     href: "http://zhengwuyang.com"
     # },{
@@ -111,4 +111,4 @@ friends: [
     #     title: "Apple Developer",
     #     href: "https://developer.apple.com/"
     # }
-]
+# ]
