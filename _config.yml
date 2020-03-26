@@ -62,7 +62,7 @@ gitalk:
   clientSecret: 25689c1ae804eed87c75610fc7aff7faed83c272    #生成的clientSecret
   repo: xjxpx.github.io    #仓库名称
   owner: xjxpx    #github用户名
-  admin: peixin1995
+  admin: xjxpx
   distractionFreeMode: true #是否启用类似FB的阴影遮罩
 
 
