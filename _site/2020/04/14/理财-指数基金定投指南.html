@@ -1,0 +1,1434 @@
+<!DOCTYPE html><html lang="en">
+  <head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"><title>理财——指数基金定投指南 - Your Site Title</title>
+
+<meta name="description" content="指数基金定投指南（一）指数什么是指数指数是一个选股规则，他的目的是按照某个规则挑选出一篮子股票，并反映这一篮子股票的平均价格走势。开发指数的机构中国内地  证券交易所          上海证券交易所——上证系列指数      深圳证券交易所——深证系列指数        指数公司          中证指数有限...">
+<link rel="canonical" href="http://localhost:4000/2020/04/14/%E7%90%86%E8%B4%A2-%E6%8C%87%E6%95%B0%E5%9F%BA%E9%87%91%E5%AE%9A%E6%8A%95%E6%8C%87%E5%8D%97.html"><link rel="alternate" type="application/rss+xml" title="Your Site Title" href="/feed.xml"><!-- start favicons snippet, use https://realfavicongenerator.net/ --><link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png"><link rel="manifest" href="/assets/site.webmanifest"><link rel="mask-icon" href="/assets/safari-pinned-tab.svg" color="#fc4d50"><link rel="shortcut icon" href="/assets/favicon.ico">
+
+<meta name="msapplication-TileColor" content="#ffc40d"><meta name="msapplication-config" content="/assets/browserconfig.xml">
+
+<meta name="theme-color" content="#ffffff">
+<!-- end favicons snippet --><link rel="stylesheet" href="/assets/css/main.css"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" ><!-- start custom head snippets -->
+
+<!-- end custom head snippets -->
+<script>(function() {
+  window.isArray = function(val) {
+    return Object.prototype.toString.call(val) === '[object Array]';
+  };
+  window.isString = function(val) {
+    return typeof val === 'string';
+  };
+
+  window.hasEvent = function(event) {
+    return 'on'.concat(event) in window.document;
+  };
+
+  window.isOverallScroller = function(node) {
+    return node === document.documentElement || node === document.body || node === window;
+  };
+
+  window.isFormElement = function(node) {
+    var tagName = node.tagName;
+    return tagName === 'INPUT' || tagName === 'SELECT' || tagName === 'TEXTAREA';
+  };
+
+  window.pageLoad = (function () {
+    var loaded = false, cbs = [];
+    window.addEventListener('load', function () {
+      var i;
+      loaded = true;
+      if (cbs.length > 0) {
+        for (i = 0; i < cbs.length; i++) {
+          cbs[i]();
+        }
+      }
+    });
+    return {
+      then: function(cb) {
+        cb && (loaded ? cb() : (cbs.push(cb)));
+      }
+    };
+  })();
+})();
+(function() {
+  window.throttle = function(func, wait) {
+    var args, result, thisArg, timeoutId, lastCalled = 0;
+
+    function trailingCall() {
+      lastCalled = new Date;
+      timeoutId = null;
+      result = func.apply(thisArg, args);
+    }
+    return function() {
+      var now = new Date,
+        remaining = wait - (now - lastCalled);
+
+      args = arguments;
+      thisArg = this;
+
+      if (remaining <= 0) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+        lastCalled = now;
+        result = func.apply(thisArg, args);
+      } else if (!timeoutId) {
+        timeoutId = setTimeout(trailingCall, remaining);
+      }
+      return result;
+    };
+  };
+})();
+(function() {
+  var Set = (function() {
+    var add = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (data[i] === item) {
+          return;
+        }
+      }
+      this.size ++;
+      data.push(item);
+      return data;
+    };
+
+    var Set = function(data) {
+      this.size = 0;
+      this._data = [];
+      var i;
+      if (data.length > 0) {
+        for (i = 0; i < data.length; i++) {
+          add.call(this, data[i]);
+        }
+      }
+    };
+    Set.prototype.add = add;
+    Set.prototype.get = function(index) { return this._data[index]; };
+    Set.prototype.has = function(item) {
+      var i, data = this._data;
+      for (i = 0; i < data.length; i++) {
+        if (this.get(i) === item) {
+          return true;
+        }
+      }
+      return false;
+    };
+    Set.prototype.is = function(map) {
+      if (map._data.length !== this._data.length) { return false; }
+      var i, j, flag, tData = this._data, mData = map._data;
+      for (i = 0; i < tData.length; i++) {
+        for (flag = false, j = 0; j < mData.length; j++) {
+          if (tData[i] === mData[j]) {
+            flag = true;
+            break;
+          }
+        }
+        if (!flag) { return false; }
+      }
+      return true;
+    };
+    Set.prototype.values = function() {
+      return this._data;
+    };
+    return Set;
+  })();
+
+  window.Lazyload = (function(doc) {
+    var queue = {js: [], css: []}, sources = {js: {}, css: {}}, context = this;
+    var createNode = function(name, attrs) {
+      var node = doc.createElement(name), attr;
+      for (attr in attrs) {
+        if (attrs.hasOwnProperty(attr)) {
+          node.setAttribute(attr, attrs[attr]);
+        }
+      }
+      return node;
+    };
+    var end = function(type, url) {
+      var s, q, qi, cbs, i, j, cur, val, flag;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        s[url] = true;
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (cur.urls.has(url)) {
+            qi = cur, val = qi.urls.values();
+            qi && (cbs = qi.callbacks);
+            for (flag = true, j = 0; j < val.length; j++) {
+              cur = val[j];
+              if (!s[cur]) {
+                flag = false;
+              }
+            }
+            if (flag && cbs && cbs.length > 0) {
+              for (j = 0; j < cbs.length; j++) {
+                cbs[j].call(context);
+              }
+              qi.load = true;
+            }
+          }
+        }
+      }
+    };
+    var load = function(type, urls, callback) {
+      var s, q, qi, node, i, cur,
+        _urls = typeof urls === 'string' ? new Set([urls]) : new Set(urls), val, url;
+      if (type === 'js' || type ==='css') {
+        s = sources[type], q = queue[type];
+        for (i = 0; i < q.length; i++) {
+          cur = q[i];
+          if (_urls.is(cur.urls)) {
+            qi = cur;
+            break;
+          }
+        }
+        val = _urls.values();
+        if (qi) {
+          callback && (qi.load || qi.callbacks.push(callback));
+          callback && (qi.load && callback());
+        } else {
+          q.push({
+            urls: _urls,
+            callbacks: callback ? [callback] : [],
+            load: false
+          });
+          for (i = 0; i < val.length; i++) {
+            node = null, url = val[i];
+            if (s[url] === undefined) {
+              (type === 'js' ) && (node = createNode('script', { src: url }));
+              (type === 'css') && (node = createNode('link', { rel: 'stylesheet', href: url }));
+              if (node) {
+                node.onload = (function(type, url) {
+                  return function() {
+                    end(type, url);
+                  };
+                })(type, url);
+                (doc.head || doc.body).appendChild(node);
+                s[url] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+    return {
+      js: function(url, callback) {
+        load('js', url, callback);
+      },
+      css: function(url, callback) {
+        load('css', url, callback);
+      }
+    };
+  })(this.document);
+})();
+</script><script>
+  (function() {
+    var TEXT_VARIABLES = {
+      version: '2.2.6',
+      sources: {
+        font_awesome: 'https://use.fontawesome.com/releases/v5.0.13/css/all.css',
+        jquery: 'https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js',
+        leancloud_js_sdk: '//cdn.jsdelivr.net/npm/leancloud-storage@3.13.2/dist/av-min.js',
+        chart: 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js',
+        gitalk: {
+          js: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.js',
+          css: 'https://cdn.bootcss.com/gitalk/1.2.2/gitalk.min.css'
+        },
+        valine: 'https://unpkg.com/valine/dist/Valine.min.js',
+        mathjax: 'https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML',
+        mermaid: 'https://cdn.bootcss.com/mermaid/8.0.0-rc.8/mermaid.min.js'
+      },
+      site: {
+        toc: {
+          selectors: 'h1,h2,h3'
+        }
+      },
+      paths: {
+        search_js: '/assets/search.js'
+      }
+    };
+    window.TEXT_VARIABLES = TEXT_VARIABLES;
+  })();
+</script>
+</head>
+  <body>
+    <div class="root" data-is-touch="false">
+      <div class="layout--page js-page-root"><div class="page__main js-page-main page__viewport has-aside cell cell--auto">
+
+      <div class="page__main-inner"><div class="page__header d-print-none"><header class="header"><div class="main">
+      <div class="header__title">
+        <div class="header__brand"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="24px" height="24px" viewBox="0 0 24 24">
+<style type="text/css">
+	.st0{fill:#515151;}
+</style>
+<path class="st0" d="M1.7,22.3c5.7-5.7,11.3-5.7,17,0c3.3-3.3,3.5-5.3,0.8-6c2.7,0.7,3.5-1.1,2.3-5.6s-3.3-5.2-6.3-2.1
+	c3-3,2.3-5.2-2.1-6.3S7,1.8,7.7,4.6C7,1.8,5,2.1,1.7,5.3C7.3,11,7.3,16.7,1.7,22.3"/>
+</svg>
+<a title="Your Site Description
+" href="/">Your Site Title</a></div><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></div><nav class="navigation">
+        <ul><li class="navigation__item"><a href="/archive.html">Archive</a></li><li class="navigation__item"><a href="/about.html">About</a></li><li><button class="button button--secondary button--circle search-button js-search-toggle"><i class="fas fa-search"></i></button></li></ul>
+      </nav></div>
+  </header>
+</div><div class="page__content"><div class ="main"><div class="grid grid--reverse">
+
+              <div class="col-aside d-print-none js-col-aside"><aside class="page__aside js-page-aside"><div class="toc-aside js-toc-root"></div>
+</aside></div>
+
+              <div class="col-main cell cell--auto"><!-- start custom main top snippet -->
+
+<!-- end custom main top snippet -->
+<article itemscope itemtype="http://schema.org/Article"><div class="article__header"><header><h1>理财——指数基金定投指南</h1></header><span class="split-space">&nbsp;</span>
+          <a class="edit-on-github"
+            title="Edit on Github"
+            href="https://github.com/xjxpx/xjxpx.github.io/tree/master/_posts/2020-04-14-理财——指数基金定投指南.md">
+            <i class="far fa-edit"></i></a></div><meta itemprop="headline" content="理财——指数基金定投指南"><div class="article__info clearfix"><ul class="left-col menu"><li>
+              <a class="button button--secondary button--pill button--sm"
+                href="/archive.html?tag=%E7%90%86%E8%B4%A2">理财</a>
+            </li></ul><ul class="right-col menu"><li><i class="fas fa-user"></i> <span>XPX</span></li><li><i class="far fa-calendar-alt"></i> <span>Apr 14, 2020</span>
+            </li></ul></div><meta itemprop="author" content="XPX"/><meta itemprop="datePublished" content="2020-04-14T00:00:00+08:00">
+    <meta itemprop="keywords" content="理财"><div class="js-article-content"><div class="layout--article"><!-- start custom article top snippet -->
+
+<!-- end custom article top snippet -->
+<div class="article__content" itemprop="articleBody"><h1 id="指数基金定投指南一">指数基金定投指南（一）</h1>
+
+<h2 id="指数">指数</h2>
+
+<h3 id="什么是指数">什么是指数</h3>
+
+<p>指数是一个选股规则，他的目的是按照某个规则挑选出一篮子股票，并反映这一篮子股票的平均价格走势。</p>
+
+<h3 id="开发指数的机构">开发指数的机构</h3>
+
+<h4 id="中国内地">中国内地</h4>
+<ol>
+  <li>证券交易所
+    <ul>
+      <li>上海证券交易所——上证系列指数</li>
+      <li>深圳证券交易所——深证系列指数</li>
+    </ul>
+  </li>
+  <li>指数公司
+    <ul>
+      <li>中证指数有限公司——中证系列指数</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="美国">美国</h4>
+<ol>
+  <li>交易所
+    <ul>
+      <li>纳斯达克指数</li>
+    </ul>
+  </li>
+  <li>指数公司
+    <ul>
+      <li>普标500指数</li>
+      <li>道琼斯指数</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="香港">香港</h4>
+<ol>
+  <li>恒生公司
+    <ul>
+      <li>恒生指数</li>
+      <li>H股指数</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="常见指数基金品种">常见指数基金品种</h2>
+
+<h3 id="指数基金的分类">指数基金的分类</h3>
+
+<h4 id="宽基指数与行业指数">宽基指数与行业指数</h4>
+<p>挑选股票的时候不限制行业；挑选股票的时候只限制在某一些行业</p>
+
+<h4 id="增强型指数基金">增强型指数基金</h4>
+<p>在原本指数基金的基础上去做一些操作来专区超额收益如打新、量化模型等。</p>
+<ul>
+  <li>打新就是用资金参与新股申购</li>
+  <li>量化模型就是把数理统计学应用于科学数据，以使数理统计学构造出来的模型得到经验上的支持，并获得数值结果。根据结果在控制风险的前提下实现收益的最大化，在低位买进，在最高位抛出的波段操作。</li>
+</ul>
+
+<h4 id="联接基金">联接基金</h4>
+<p>由于场内基金投资需要开股票账户，具体操作比较麻烦。因此基金公司就开发了联接基金，方便从场外投资。很多基金公司成离ETF基金（交易型开放式指数基金）时，大多数也会成立对应的ETF联接基金，ETF联接基金是投资到对应的ETF基金上的，一般不会再单独收取管理费用。</p>
+
+<h3 id="指数基金的交易渠道">指数基金的交易渠道</h3>
+<p>基金指数从交易渠道上可以分为</p>
+<ol>
+  <li>场内指数基金，主要是ETF基金（交易型开放式指数基金）和LOF基金（上市型开放式基金）</li>
+  <li>场外指数基金</li>
+</ol>
+
+<p>这个场指的是证券交易所，其中ETF基金只能通过股票交易软件交易，LOF基金还可以在场外通过申购赎回的方式交易。</p>
+
+<p>二者的区别在于：</p>
+<ol>
+  <li>交易机制不同：
+场外基金是通过基金公司、银行、第三方基金销售平台买卖；
+场内基金是投资者与其他投资者进行交易。</li>
+  <li>功能性不同：
+场外基金只能进行申购和赎回，没有交易功能。
+场内基金可以和股票一样在二级市场交易，但是不能定投。</li>
+  <li>投资门槛不同：
+场外基金投资门槛很低；
+场内基金买卖类似于股票，至少需要买一手，也就是100份额的基金，因此门槛较高。</li>
+  <li>费率不同：
+选择购买场外基金，由基金公司、银行、第三方基金销售平台决定费率；
+场内基金费用取决于开户的券商的佣金，佣金和证券交易一样</li>
+  <li>流动性不同：
+场内基金流动相较好，到账时间较快。</li>
+  <li>可选基金数量不同：
+场外基金数量多，选择余地大；场内基金数量少，类型少。</li>
+</ol>
+
+<h3 id="常见的宽基指数基金">常见的宽基指数基金</h3>
+
+<h4 id="1上证50指数000016">1.上证50指数（000016）</h4>
+<p>上证指数是从上交所挑选沪市规模最大、流动性最好、最具代表性的50只股票组成的样本股。</p>
+<h5 id="特点">特点</h5>
+<ol>
+  <li>以大盘股为主，也成为蓝筹股，蓝筹出自西方赌场，赌场里蓝色筹码最为值钱。后来人们就用蓝筹股表示规模较大、有影响力的公司。</li>
+  <li>只有上交所的股票</li>
+</ol>
+
+<h4 id="2沪深300指数000300399300">2.沪深300指数（000300/399300）</h4>
+<p>沪深300是由中证指数公司开发的，从上交所和深交所挑选规模最大、流动性最好的300只股票。沪深300被认为是国内股市最具代表性的指数。</p>
+<h5 id="特点-1">特点</h5>
+<ol>
+  <li>以大盘股为主，兼顾上海和深圳上市公司</li>
+</ol>
+
+<h4 id="3中证500指数">3.中证500指数</h4>
+<p>中证500是由中证指数公司开发，代表的是国内中等规模上市公司。<strong>该指数是将全部沪深300指数的300家公司排除，然后将最近一年日均总市值排名前300名的企业也排除，再剩下的公司中，选择日均总市值排名500名的企业</strong></p>
+
+<h5 id="特点-2">特点</h5>
+<p>以中型上市公司为主，与沪深300和上证50重合度很低。</p>
+
+<h4 id="4创业板指数">4.创业板指数</h4>
+<p>上交所和深交所上市交易的股票大多在主板上市交易。但<strong>主板上市交易门槛很高</strong>，需要达到一定的<strong>规模和盈利</strong>。国家针对盈利条件不好的小公司创建了创业板。创业板是放在深交所下面的。</p>
+<h5 id="特点-3">特点</h5>
+<p>相比主板指数，容易出现暴涨暴跌</p>
+
+<h4 id="5红利指数">5.红利指数</h4>
+<p>以上指数挑选股票时时按照市值加权的，即股票规模越大，权重越高。这类叫做<strong>市值加权</strong>。还有另一类股票是按照<strong>策略加权</strong>的方法挑选的。<em>其中红利指数就是策略加权的一种，它是按照股息率决定权重，股息率越高的股票权重越大</em>。<strong>所谓股息就是现金分红。</strong></p>
+<ol>
+  <li>上证红利指数（000015）：
+上交所过去两年平均现金股息率最高的50只股票。</li>
+  <li>中证红利指数（000922/399922）：
+上交所和深交所过去两年平均现金股息率最高的100只股票。</li>
+</ol>
+
+<p><em>从历史表现上来看，中证红利的历史收益要高于上证红利。</em></p>
+<ol>
+  <li>深证红利指数（399324）：
+深交所过去两年平均现金股息率最高的40只股票。</li>
+</ol>
+
+<h5 id="红利机会指数">红利机会指数</h5>
+<p>红利机会指数是在传统红利指数的基础上增加了三个要求：</p>
+<ol>
+  <li>过去三年盈利增长为正 ——&gt;筛选掉盈利走下坡路的高分红股</li>
+  <li>过去净盈利必须为正</li>
+  <li>每只股票权重不超过3%，单个行业不超过33% ——&gt;限制指数行业的占比
+    <h5 id="特点-4">特点</h5>
+  </li>
+  <li>高股息率，在熊市更有优势</li>
+  <li>能够持续发放现金股息的公司，盈利能力和财物健康状况好的概率越高</li>
+  <li>提供分红现金流</li>
+</ol>
+
+<h4 id="7基本面指数">7.基本面指数</h4>
+<p>基本面指数也是策略加权的一种。一个公司的基本面包括:</p>
+<ol>
+  <li>营业收入</li>
+  <li>现金流</li>
+  <li>净资产</li>
+  <li>分红</li>
+</ol>
+
+<p>基本面指数就是按照以上4个指标挑选股票。</p>
+
+<h5 id="中证基本面50指数特点">中证基本面50指数特点</h5>
+<ol>
+  <li>与上证50指数相近</li>
+  <li>挑选股票考虑得更加全面</li>
+</ol>
+
+<h4 id="8恒生指数">8.恒生指数</h4>
+<p>恒生指数是港交所发行的港股指数基金。选取的是所有在中国香港上市的公司中规模最大的50家企业。</p>
+<h5 id="特点-5">特点</h5>
+<ol>
+  <li>历史悠久，成熟开放</li>
+  <li>跟内地紧密关联，但投资者以境外投资者为主。</li>
+  <li>“老千股”导致个股投资风险巨大
+    <h5 id="港股通">港股通</h5>
+    <p>通过港股通内地可以更为方便地投资香港股票。</p>
+  </li>
+</ol>
+
+<h4 id="9h股指数恒生中国企业指数">9.H股指数(恒生中国企业指数)</h4>
+<p>挑选在香港上市的内地企业中的股票。</p>
+<h5 id="特点-6">特点</h5>
+<ol>
+  <li>内地公司在境外的“代言人”</li>
+  <li>与内地经济紧密相关，但仍旧以境外投资者为主</li>
+  <li>多数H股公司也会在A股上市，H股与A股关系紧密</li>
+</ol>
+
+<h4 id="10上证ah优选指数">10.上证AH优选指数</h4>
+<p>对于同时在A股和H股上市的公司，买入AH股中相对便宜的，卖出相对贵的。</p>
+<h5 id="特点-7">特点</h5>
+<ol>
+  <li>成分股与上证50相同</li>
+  <li>成分股入选时，如果成分股同时具备A股和H股，选相对便宜的。</li>
+  <li>每个月第二周，进行依次轮动</li>
+</ol>
+
+<h4 id="11纳斯达克100指数">11.纳斯达克100指数</h4>
+<p>纳斯达克规模最大的100家大型企业。</p>
+
+<h4 id="12普标500指数">12.普标500指数</h4>
+<p>普标500是<strong>附带主观判断的蓝筹股指数</strong>，倾向于选择行业的领导者、长期盈利更好的公司。</p>
+
+<h3 id="行业指数基金">行业指数基金</h3>
+<p>十个一级行业</p>
+<ul>
+  <li>材料：金属、采矿、化学制品</li>
+  <li>可选消费：汽车、零售、媒体、房地产</li>
+  <li>必需消费：食品、烟草、家居等</li>
+  <li>能源：能源设备、石油天然气等</li>
+  <li>金融：银行、保险、券商等</li>
+  <li>医药：医疗保健、制药、生物科技等</li>
+  <li>工业：航空航天、运输、建筑等</li>
+  <li>信息：硬件、软件、信息技术</li>
+  <li>电信：固定线路、无线通信、电信业务</li>
+  <li>公共事业：电力、天然气、水</li>
+</ul>
+
+<h4 id="值得投资的行业">值得投资的行业</h4>
+<ol>
+  <li>天生赚钱更容易的行业
+    <ul>
+      <li>医药</li>
+      <li>必需消费</li>
+      <li>可选消费</li>
+      <li>养老</li>
+    </ul>
+  </li>
+  <li>具有明显强周期性的行业
+    <ul>
+      <li>金融</li>
+      <li>能源</li>
+      <li>部分材料行业</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="必需消费行业">必需消费行业</h4>
+<ol>
+  <li>上证消费指数</li>
+  <li>上证消费80指数</li>
+  <li>中证消费指数</li>
+  <li>全指消费指数</li>
+</ol>
+
+<h4 id="医药行业">医药行业</h4>
+<ol>
+  <li>中证医药指数</li>
+  <li>中证医药100指数</li>
+  <li>上证医药指数</li>
+  <li>全指医药指数</li>
+  <li>细分医药指数</li>
+  <li>300医药指数</li>
+  <li>500医药指数</li>
+</ol>
+
+<h4 id="可选消费行业">可选消费行业</h4>
+
+<ol>
+  <li>需求比必需消费弱，有一定周期性</li>
+  <li>受益于人口红利，特别是人均消费金额的提升</li>
+  <li>可选消费的升级换代特性</li>
+</ol>
+
+<h4 id="养老行业">养老行业</h4>
+<ol>
+  <li>中证养老指数
+    <h5 id="特点-8">特点</h5>
+    <p>股票挑选方式是先保证各子行业的龙头入选，再按市值来挑选。养老产业指数主要是由医药行业、必须消费行业和可选消费行业混合的。因此具备医药和消费的优秀属性</p>
+  </li>
+</ol>
+
+<h4 id="强周期性行业之银行业">强周期性行业之银行业</h4>
+<p>券商业绩会受牛市和熊市影响；银行会受宏观经济影响；航空会因为油价的波动而成本变化很大。</p>
+
+<ol>
+  <li>上证50指数、基本面50指数、H股指数、50AH优选指数。这四个指数中包含了很多银行股</li>
+  <li>中证银行指数</li>
+</ol>
+
+<h4 id="强周期性行业之证券业">强周期性行业之证券业</h4>
+<ol>
+  <li>中证全指证券行业指数</li>
+</ol>
+
+<h4 id="强周期性行业之地产行业">强周期性行业之地产行业</h4>
+<ol>
+  <li>中证800地产指数</li>
+  <li>国证地产指数</li>
+  <li>地产等权指数</li>
+</ol>
+
+<h4 id="军工指数">军工指数</h4>
+<ol>
+  <li>中证军工指数</li>
+</ol>
+
+<h4 id="环保">环保</h4>
+<ol>
+  <li>中证环保指数</li>
+</ol>
+
+<h4 id="白酒">白酒</h4>
+<ol>
+  <li>中证白酒指数</li>
+</ol>
+
+<h2 id="挑选适合投资的指数基金">挑选适合投资的指数基金</h2>
+
+<h3 id="价值投资的理念">价值投资的理念</h3>
+<p>低估值资产投资+指数基金</p>
+
+<h4 id="基本理论">基本理论</h4>
+
+<h4 id="价格与价值的关系">价格与价值的关系</h4>
+<p>价格在长期内与其内在价值趋于一致</p>
+
+<h4 id="能力圈">能力圈</h4>
+<p>能力圈理论要求我们对所投资品种非常了解，能大致判断出其内在价值。</p>
+
+<h4 id="安全边际">安全边际</h4>
+<p>要用比价值更低的价格去买股票</p>
+
+<h3 id="常见的估值指标">常见的估值指标</h3>
+
+<h4 id="市盈率">市盈率</h4>
+<p>市盈率=$\frac{公司市值}{公司盈利}$</p>
+
+<ul>
+  <li>静态市盈率： 公司上一个年度的净利润</li>
+  <li>滚动市盈率： 公司最近4个季度的净利润</li>
+  <li>动态市盈率： 预估的下一个年度的净利润</li>
+</ul>
+
+<h5 id="特点-9">特点</h5>
+
+<ol>
+  <li>市盈率反映我们愿意为1元的净利润付出多少代价</li>
+  <li>估算市值</li>
+  <li>市盈率的适用范围：流通性好、盈利稳定的品种
+    <ol>
+      <li>流通性好：股票流通性差意味着成交量低，如果需求大于成交量就会导致成交价大幅度上升。一般能够进入沪深300，中证500之类的股票流通性都没问题。</li>
+      <li>盈利稳定：对于没落行业、周期性行业（钢铁、煤炭、证券、航空航运）、处于成长期的行业其盈利并不稳定，并不适用市盈率。</li>
+    </ol>
+  </li>
+</ol>
+
+<h4 id="盈利收益率">盈利收益率</h4>
+<p>盈利收益率=$\frac{公司盈利}{公司市值}=\frac{1}{市盈率}$</p>
+
+<p>盈利收益率为市盈率的倒数，一般盈利收益率越高，代表公司的估值就越低，公司越有可能被低估。盈利收益率同样只适用于<strong>流通性好、盈利稳定</strong>的股票</p>
+
+<h4 id="市净率">市净率</h4>
+<p>市净率=$\frac{公司市值}{公司净资产}$</p>
+
+<p>净资产=资产-负债</p>
+
+<h5 id="影响市净率有效性的因素">影响市净率有效性的因素</h5>
+
+<ol>
+  <li>净资产收益（ROE）:ROE=$\frac{净利润}{净资产}$</li>
+  <li>资产的价值稳定性：有的资产会随时间增值，有的会随时间贬值。</li>
+  <li>无形资产：品牌、技术、专利、话语权等，<strong>如果一个公司主要考无形资产经营如律师事务所、广告、互联网公司等，那市盈率就没有多少参考价值。</strong></li>
+  <li>负债大增或亏损：如果公司负债不稳定，会影响到净资产</li>
+</ol>
+
+<p>当<strong>企业的资产大多是比较容易衡量价值的有形资产，并且长期保值</strong>时比较适合用市净率来估值</p>
+
+<h4 id="股息率">股息率</h4>
+
+<p>分红率=$\frac{过去一年的现金派息}{公司的总净利润}$</p>
+
+<p>股息率=$\frac{过去一年的现金派息}{公司总市值}=\frac{过去一年的现金派息}{公司的总净利润}<em>\frac{公司的总净利润}{公司总市值}=分红率</em>盈利收益率$</p>
+
+<p>一般分红率是公司预先设置好的，并且连续多年不会改变</p>
+
+<h4 id="查询指数的估值">查询指数的估值</h4>
+
+<ol>
+  <li>指数基金可以计算估值，但普通的股票基金的信息往往不会公开</li>
+</ol>
+
+<h5 id="关注指数基金公众号">关注指数基金公众号</h5>
+<p>定投十年赚十倍</p>
+
+<h5 id="指数官网">指数官网</h5>
+
+<h5 id="金融终端">金融终端</h5>
+
+<h3 id="盈利收益率法挑选指数基金">盈利收益率法挑选指数基金</h3>
+
+<ul>
+  <li>当盈利收益率大于10%时开始定投</li>
+  <li>当盈利收益率低于10%时，停止定投，对已经定投的份额选择持有</li>
+  <li>当盈利收益率低于6.4%时，分批卖出基金份额</li>
+</ul>
+
+<h4 id="盈利收益率法的局限和适合品种">盈利收益率法的局限和适合品种</h4>
+
+<p>盈利收益率法只适合流通性比较好，盈利较稳定的品种。如果盈利增长速度较快，或者盈利波动较大的指数基金不适用。</p>
+
+<p>适合的品种有上证红利、中证红利、上证50、基本面50、上证50AH优选、央视50、恒生指数、恒生中国指数等。</p>
+
+<h3 id="博格公式法挑选指数基金">博格公式法挑选指数基金</h3>
+
+<h4 id="影响指数基金收益的三大因素">影响指数基金收益的三大因素</h4>
+
+<ol>
+  <li>初始投资时刻指数基金的股息率</li>
+  <li>投资期内指数基金的市盈率变化</li>
+  <li>投资期内指数基金的盈利增长率</li>
+</ol>
+
+<p>指数基金的未来年复合收益率=指数基金的股息率+指数基金的市盈率变化率+指数基金的盈利增长率</p>
+
+<p>根据以上三个因素，我们可以做到下面三点：</p>
+<ol>
+  <li>在股息率高得时候买入</li>
+  <li>在市盈率处于历史低位的时候买入</li>
+  <li>买入之后耐心等待均值回归</li>
+</ol>
+
+<h3 id="指数基金估值方法小结">指数基金估值方法小结</h3>
+
+<ol>
+  <li>对于<strong>盈利稳定</strong>的指数：适用<strong>盈利收益率法</strong>分析</li>
+  <li>对于<strong>盈利成高速增长态势</strong>的指数：使用<strong>博格公式</strong>判断，需要了解历史的市盈率波动范围</li>
+  <li>对于<strong>盈利不稳定状态</strong>或<strong>盈利承周期性变化</strong>，<strong>但行业没有长期亏损记录的指数</strong>：使用博格公式的变种，即当<strong>市净率处于历史市净率波动范围的较低区域</strong>，可以对其进行投资。</li>
+</ol>
+
+<h3 id="提高定投收益的技巧">提高定投收益的技巧</h3>
+
+<h4 id="降低交易基金的费用">降低交易基金的费用</h4>
+
+<h5 id="费用类别">费用类别</h5>
+
+<ol>
+  <li>申购费赎回费：选择靠谱的网络平台申购，赎回费随时间增加降低</li>
+  <li>买卖佣金：基本费用在0.03%左右</li>
+  <li>销售服务费：C类基金不收取申购赎回费，但每年会收取销售服务费</li>
+  <li>印花税：印花税时针对场内基金的品种。目前股票交易的印花税为0.1%，单边收取，即买股票不收，卖股票才收。</li>
+  <li>分红税：持股不到一个月扣除20%的税；持股1个月至一年，扣除10%的税；持股一年以上，扣除5%的税。</li>
+  <li>所得税：国内基金交易不需要交。</li>
+</ol>
+
+<h5 id="降低费用的要诀">降低费用的要诀</h5>
+
+<ol>
+  <li>尽量选择费率较低的场外和场内渠道</li>
+  <li>不要过于频繁交易</li>
+  <li>成立1年以上的指数基金，在分红税上更有优势</li>
+</ol>
+
+<h4 id="定期不定额盈利收益率法">定期不定额：盈利收益率法</h4>
+
+<p>当基金盈利收益率的时候，多投一些。</p>
+
+<p>首次定投金额✖$\frac{当月盈利收益率}{首次的盈利收益率}$</p>
+</div><section class="article__sharing d-print-none"></section><div class="d-print-none"><footer class="article__footer"><meta itemprop="dateModified" content="2020-04-14T00:00:00+08:00"><!-- start custom article footer snippet -->
+
+<!-- end custom article footer snippet -->
+<div class="article__subscribe"><div class="subscribe"><i class="fas fa-rss"></i> <a type="application/rss+xml" href="/feed.xml">Subscribe</a></div>
+</div><div class="article__license"><div class="license">
+    <p>This work is licensed under a <a itemprop="license" rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Attribution-NonCommercial 4.0 International</a> license.
+      <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">
+        <img alt="Attribution-NonCommercial 4.0 International" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" />
+      </a>
+    </p>
+  </div></div></footer>
+<div class="article__section-navigator clearfix"><div class="previous"><span>PREVIOUS</span><a href="/2020/04/08/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6-%E7%9D%80%E8%89%B2.html">计算机图形学（三）——着色（Shading）</a></div><div class="next"><span>NEXT</span><a href="/2020/04/22/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6-%E5%87%A0%E4%BD%95.html">计算机图形学（四）——几何（Geometry）</a></div></div></div>
+
+</div>
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    $(function() {
+      var $this ,$scroll;
+      var $articleContent = $('.js-article-content');
+      var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+      var scroll = hasSidebar ? '.js-page-main' : 'html, body';
+      $scroll = $(scroll);
+
+      $articleContent.find('.highlight').each(function() {
+        $this = $(this);
+        $this.attr('data-lang', $this.find('code').attr('data-lang'));
+      });
+      $articleContent.find('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').each(function() {
+        $this = $(this);
+        $this.append($('<a class="anchor d-print-none" aria-hidden="true"></a>').html('<i class="fas fa-anchor"></i>'));
+      });
+      $articleContent.on('click', '.anchor', function() {
+        $scroll.scrollToAnchor('#' + $(this).parent().attr('id'), 400);
+      });
+    });
+  });
+})();
+</script>
+</div><section class="page__comments d-print-none"></section></article><!-- start custom main bottom snippet -->
+
+<!-- end custom main bottom snippet -->
+</div>
+            </div></div></div><div class="page__footer d-print-none">
+<footer class="footer py-4 js-page-footer">
+  <div class="main"><div itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="XPX"><meta itemprop="url" content="/xjxpx.github.io"><div class="footer__author-links"><div class="author-links">
+  <ul class="menu menu--nowrap menu--inline"><link itemprop="url" href="xjxpx.github.io"><li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:xuepeixin2016@gmail.com" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a><li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/xjxpx" target="_blank">
+          <div class="icon"><svg fill="#000000" width="24px" height="24px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z" />
+</svg>
+</div>
+        </a>
+      </li></ul>
+</div>
+</div>
+    </div><div class="site-info mt-2">
+      <div>© Your Site Title 2020,
+        Powered by <a title="Jekyll is a simple, blog-aware, static site generator." href="http://jekyllrb.com/">Jekyll</a> & <a
+        title="TeXt is a super customizable Jekyll theme." href="https://github.com/kitian616/jekyll-TeXt-theme">TeXt Theme</a>.
+      </div>
+    </div>
+  </div>
+</footer>
+</div></div>
+    </div><script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $body = $('body'), $window = $(window);
+    var $pageRoot = $('.js-page-root'), $pageMain = $('.js-page-main');
+    var activeCount = 0;
+    function modal(options) {
+      var $root = this, visible, onChange, hideWhenWindowScroll = false;
+      var scrollTop;
+      function setOptions(options) {
+        var _options = options || {};
+        visible = _options.initialVisible === undefined ? false : show;
+        onChange = _options.onChange;
+        hideWhenWindowScroll = _options.hideWhenWindowScroll;
+      }
+      function init() {
+        setState(visible);
+      }
+      function setState(isShow) {
+        if (isShow === visible) {
+          return;
+        }
+        visible = isShow;
+        if (visible) {
+          activeCount++;
+          scrollTop = $(window).scrollTop() || $pageMain.scrollTop();
+          $root.addClass('modal--show');
+          $pageMain.scrollTop(scrollTop);
+          activeCount === 1 && ($pageRoot.addClass('show-modal'), $body.addClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.on('scroll', hide);
+          $window.on('keyup', handleKeyup);
+        } else {
+          activeCount > 0 && activeCount--;
+          $root.removeClass('modal--show');
+          $window.scrollTop(scrollTop);
+          activeCount === 0 && ($pageRoot.removeClass('show-modal'), $body.removeClass('of-hidden'));
+          hideWhenWindowScroll && window.hasEvent('touchstart') && $window.off('scroll', hide);
+          $window.off('keyup', handleKeyup);
+        }
+        onChange && onChange(visible);
+      }
+      function show() {
+        setState(true);
+      }
+      function hide() {
+        setState(false);
+      }
+      function handleKeyup(e) {
+        // Char Code: 27  ESC
+        if (e.which ===  27) {
+          hide();
+        }
+      }
+      setOptions(options);
+      init();
+      return {
+        show: show,
+        hide: hide,
+        $el: $root
+      };
+    }
+    $.fn.modal = modal;
+  });
+})();
+</script><div class="modal modal--overflow page__search-modal d-print-none js-page-search-modal"><script>
+(function () {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    // search panel
+    var search = (window.search || (window.search = {}));
+    var useDefaultSearchBox = window.useDefaultSearchBox === undefined ?
+      true : window.useDefaultSearchBox ;
+
+    var $searchModal = $('.js-page-search-modal');
+    var $searchToggle = $('.js-search-toggle');
+    var searchModal = $searchModal.modal({ onChange: handleModalChange, hideWhenWindowScroll: true });
+    var modalVisible = false;
+    search.searchModal = searchModal;
+
+    var $searchBox = null;
+    var $searchInput = null;
+    var $searchClear = null;
+
+    function getModalVisible() {
+      return modalVisible;
+    }
+    search.getModalVisible = getModalVisible;
+
+    function handleModalChange(visible) {
+      modalVisible = visible;
+      if (visible) {
+        search.onShow && search.onShow();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].focus();
+      } else {
+        search.onShow && search.onHide();
+        useDefaultSearchBox && $searchInput[0] && $searchInput[0].blur();
+        setTimeout(function() {
+          useDefaultSearchBox && ($searchInput.val(''), $searchBox.removeClass('not-empty'));
+          search.clear && search.clear();
+          window.pageAsideAffix && window.pageAsideAffix.refresh();
+        }, 400);
+      }
+    }
+
+    $searchToggle.on('click', function() {
+      modalVisible ? searchModal.hide() : searchModal.show();
+    });
+    // Char Code: 83  S, 191 /
+    $(window).on('keyup', function(e) {
+      if (!modalVisible && !window.isFormElement(e.target || e.srcElement) && (e.which === 83 || e.which === 191)) {
+        modalVisible || searchModal.show();
+      }
+    });
+
+    if (useDefaultSearchBox) {
+      $searchBox = $('.js-search-box');
+      $searchInput = $searchBox.children('input');
+      $searchClear = $searchBox.children('.js-icon-clear');
+      search.getSearchInput = function() {
+        return $searchInput.get(0);
+      };
+      search.getVal = function() {
+        return $searchInput.val();
+      };
+      search.setVal = function(val) {
+        $searchInput.val(val);
+      };
+
+      $searchInput.on('focus', function() {
+        $(this).addClass('focus');
+      });
+      $searchInput.on('blur', function() {
+        $(this).removeClass('focus');
+      });
+      $searchInput.on('input', window.throttle(function() {
+        var val = $(this).val();
+        if (val === '' || typeof val !== 'string') {
+          search.clear && search.clear();
+        } else {
+          $searchBox.addClass('not-empty');
+          search.onInputNotEmpty && search.onInputNotEmpty(val);
+        }
+      }, 400));
+      $searchClear.on('click', function() {
+        $searchInput.val(''); $searchBox.removeClass('not-empty');
+        search.clear && search.clear();
+      });
+    }
+  });
+})();
+</script><div class="search search--dark">
+  <div class="main">
+    <div class="search__header">Search</div>
+    <div class="search-bar">
+      <div class="search-box js-search-box">
+        <div class="search-box__icon-search"><i class="fas fa-search"></i></div>
+        <input type="text" />
+        <div class="search-box__icon-clear js-icon-clear">
+          <a><i class="fas fa-times"></i></a>
+        </div>
+      </div>
+      <button class="button button--theme-dark button--pill search__cancel js-search-toggle">
+        Cancel</button>
+    </div>
+    <div class="search-result js-search-result"></div>
+  </div>
+</div>
+<script>var SOURCES = window.TEXT_VARIABLES.sources;
+var PAHTS = window.TEXT_VARIABLES.paths;
+window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
+  var search = (window.search || (window.search = {}));
+  var searchData = window.TEXT_SEARCH_DATA || {};
+
+  function memorize(f) {
+    var cache = {};
+    return function () {
+      var key = Array.prototype.join.call(arguments, ',');
+      if (key in cache) return cache[key];
+      else return cache[key] = f.apply(this, arguments);
+    };
+  }
+
+  /// search
+  function searchByQuery(query) {
+    var i, j, key, keys, cur, _title, result = {};
+    keys = Object.keys(searchData);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      for (j = 0; j < searchData[key].length; j++) {
+        cur = searchData[key][j], _title = cur.title;
+        if ((result[key] === undefined || result[key] && result[key].length < 4 )
+          && _title.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+          if (result[key] === undefined) {
+            result[key] = [];
+          }
+          result[key].push(cur);
+        }
+      }
+    }
+    return result;
+  }
+
+  var renderHeader = memorize(function(header) {
+    return $('<p class="search-result__header">' + header + '</p>');
+  });
+
+  var renderItem = function(index, title, url) {
+    return $('<li class="search-result__item" data-index="' + index + '"><a class="button" href="' + url + '">' + title + '</a></li>');
+  };
+
+  function render(data) {
+    if (!data) { return null; }
+    var $root = $('<ul></ul>'), i, j, key, keys, cur, itemIndex = 0;
+    keys = Object.keys(data);
+    for (i = 0; i < keys.length; i++) {
+      key = keys[i];
+      $root.append(renderHeader(key));
+      for (j = 0; j < data[key].length; j++) {
+        cur = data[key][j];
+        $root.append(renderItem(itemIndex++, cur.title, cur.url));
+      }
+    }
+    return $root;
+  }
+
+  // search box
+  var $result = $('.js-search-result'), $resultItems;
+  var lastActiveIndex, activeIndex;
+
+  function clear() {
+    $result.html(null);
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+  }
+  function onInputNotEmpty(val) {
+    $result.html(render(searchByQuery(val)));
+    $resultItems = $('.search-result__item'); activeIndex = 0;
+    $resultItems.eq(0).addClass('active');
+  }
+
+  search.clear = clear;
+  search.onInputNotEmpty = onInputNotEmpty;
+
+  function updateResultItems() {
+    lastActiveIndex >= 0 && $resultItems.eq(lastActiveIndex).removeClass('active');
+    activeIndex >= 0 && $resultItems.eq(activeIndex).addClass('active');
+  }
+
+  function moveActiveIndex(direction) {
+    var itemsCount = $resultItems ? $resultItems.length : 0;
+    if (itemsCount > 1) {
+      lastActiveIndex = activeIndex;
+      if (direction === 'up') {
+        activeIndex = (activeIndex - 1 + itemsCount) % itemsCount;
+      } else if (direction === 'down') {
+        activeIndex = (activeIndex + 1 + itemsCount) % itemsCount;
+      }
+      updateResultItems();
+    }
+  }
+
+  // Char Code: 13  Enter, 37  ⬅, 38  ⬆, 39  ➡, 40  ⬇
+  $(window).on('keyup', function(e) {
+    var modalVisible = search.getModalVisible && search.getModalVisible();
+    if (modalVisible) {
+      if (e.which === 38) {
+        modalVisible && moveActiveIndex('up');
+      } else if (e.which === 40) {
+        modalVisible && moveActiveIndex('down');
+      } else if (e.which === 13) {
+        modalVisible && $resultItems && activeIndex >= 0 && $resultItems.eq(activeIndex).children('a')[0].click();
+      }
+    }
+  });
+
+  $result.on('mouseover', '.search-result__item > a', function() {
+    var itemIndex = $(this).parent().data('index');
+    itemIndex >= 0 && (lastActiveIndex = activeIndex, activeIndex = itemIndex, updateResultItems());
+  });
+});
+</script>
+</div></div>
+
+
+<script>(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function scrollToAnchor(anchor, duration, callback) {
+      var $root = this;
+      $root.animate({ scrollTop: $(anchor).position().top }, duration, function() {
+        window.history.replaceState(null, '', window.location.href.split('#')[0] + anchor);
+        callback && callback();
+      });
+    }
+    $.fn.scrollToAnchor = scrollToAnchor;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function affix(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroll,
+        offsetBottom = 0, scrollTarget = window, scroll = window.document, disabled = false, isOverallScroller = true,
+        rootTop, rootLeft, rootHeight, scrollBottom, rootBottomTop,
+        hasInit = false, curState;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.offsetBottom && (offsetBottom = _options.offsetBottom);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroll && (scroll = _options.scroll);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $scrollTarget = $(scrollTarget);
+        isOverallScroller = window.isOverallScroller($scrollTarget[0]);
+        $scroll = $(scroll);
+      }
+      function preCalc() {
+        top();
+        rootHeight = $root.outerHeight();
+        rootTop = $root.offset().top + (isOverallScroller ? 0 :  $scrollTarget.scrollTop());
+        rootLeft = $root.offset().left;
+      }
+      function calc(needPreCalc) {
+        needPreCalc && preCalc();
+        scrollBottom = $scroll.outerHeight() - offsetBottom - rootHeight;
+        rootBottomTop = scrollBottom - rootTop;
+      }
+      function top() {
+        if (curState !== 'top') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: 0
+          });
+          curState = 'top';
+        }
+      }
+      function fixed() {
+        if (curState !== 'fixed') {
+          $root.addClass('fixed').css({
+            left: rootLeft + 'px',
+            top: 0
+          });
+          curState = 'fixed';
+        }
+      }
+      function bottom() {
+        if (curState !== 'bottom') {
+          $root.removeClass('fixed').css({
+            left: 0,
+            top: rootBottomTop + 'px'
+          });
+          curState = 'bottom';
+        }
+      }
+      function setState() {
+        var scrollTop = $scrollTarget.scrollTop();
+        if (scrollTop >= rootTop && scrollTop <= scrollBottom) {
+          fixed();
+        } else if (scrollTop < rootTop) {
+          top();
+        } else {
+          bottom();
+        }
+      }
+      function init() {
+        if(!hasInit) {
+          var interval, timeout;
+          calc(true); setState();
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState();
+          });
+          $window.on('resize', function() {
+            disabled || (calc(true), setState());
+          });
+          hasInit = true;
+        }
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions,
+        refresh: function() {
+          calc(true, { animation: false }); setState();
+        }
+      };
+    }
+    $.fn.affix = affix;
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    function toc(options) {
+      var $root = this, $window = $(window), $scrollTarget, $scroller, $tocUl = $('<ul class="toc toc--ellipsis"></ul>'), $tocLi, $headings, $activeLast, $activeCur,
+        selectors = 'h1,h2,h3', container = 'body', scrollTarget = window, scroller = 'html, body', disabled = false,
+        headingsPos, scrolling = false, hasRendered = false, hasInit = false;
+
+      function setOptions(options) {
+        var _options = options || {};
+        _options.selectors && (selectors = _options.selectors);
+        _options.container && (container = _options.container);
+        _options.scrollTarget && (scrollTarget = _options.scrollTarget);
+        _options.scroller && (scroller = _options.scroller);
+        _options.disabled !== undefined && (disabled = _options.disabled);
+        $headings = $(container).find(selectors).filter('[id]');
+        $scrollTarget = $(scrollTarget);
+        $scroller = $(scroller);
+      }
+      function calc() {
+        headingsPos = [];
+        $headings.each(function() {
+          headingsPos.push(Math.floor($(this).position().top));
+        });
+      }
+      function setState(element, disabled) {
+        var scrollTop = $scrollTarget.scrollTop(), i;
+        if (disabled || !headingsPos || headingsPos.length < 1) { return; }
+        if (element) {
+          $activeCur = element;
+        } else {
+          for (i = 0; i < headingsPos.length; i++) {
+            if (scrollTop >= headingsPos[i]) {
+              $activeCur = $tocLi.eq(i);
+            } else {
+              $activeCur || ($activeCur = $tocLi.eq(i));
+              break;
+            }
+          }
+        }
+        $activeLast && $activeLast.removeClass('active');
+        ($activeLast = $activeCur).addClass('active');
+      }
+      function render() {
+        if(!hasRendered) {
+          $root.append($tocUl);
+          $headings.each(function() {
+            var $this = $(this);
+            $tocUl.append($('<li></li>').addClass('toc-' + $this.prop('tagName').toLowerCase())
+              .append($('<a></a>').text($this.text()).attr('href', '#' + $this.prop('id'))));
+          });
+          $tocLi = $tocUl.children('li');
+          $tocUl.on('click', 'a', function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            scrolling = true;
+            setState($this.parent());
+            $scroller.scrollToAnchor($this.attr('href'), 400, function() {
+              scrolling = false;
+            });
+          });
+        }
+        hasRendered = true;
+      }
+      function init() {
+        var interval, timeout;
+        if(!hasInit) {
+          render(); calc(); setState(null, scrolling);
+          // run calc every 100 millisecond
+          interval = setInterval(function() {
+            calc();
+          }, 100);
+          timeout = setTimeout(function() {
+            clearInterval(interval);
+          }, 45000);
+          window.pageLoad.then(function() {
+            setTimeout(function() {
+              clearInterval(interval);
+              clearTimeout(timeout);
+            }, 3000);
+          });
+          $scrollTarget.on('scroll', function() {
+            disabled || setState(null, scrolling);
+          });
+          $window.on('resize', window.throttle(function() {
+            if (!disabled) {
+              render(); calc(); setState(null, scrolling);
+            }
+          }, 100));
+        }
+        hasInit = true;
+      }
+
+      setOptions(options);
+      if (!disabled) {
+        init();
+      }
+      $window.on('resize', window.throttle(function() {
+        init();
+      }, 200));
+      return {
+        setOptions: setOptions
+      };
+    }
+    $.fn.toc = toc;
+  });
+})();
+/*(function () {
+
+})();*/
+</script><script>
+  /* toc must before affix, since affix need to konw toc' height. */(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  var TOC_SELECTOR = window.TEXT_VARIABLES.site.toc.selectors;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window);
+    var $articleContent = $('.js-article-content');
+    var $tocRoot = $('.js-toc-root'), $col2 = $('.js-col-aside');
+    var toc;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+    var hasToc = $articleContent.find(TOC_SELECTOR).length > 0;
+
+    function disabled() {
+      return $col2.css('display') === 'none' || !hasToc;
+    }
+
+    tocDisabled = disabled();
+
+    toc = $tocRoot.toc({
+      selectors: TOC_SELECTOR,
+      container: $articleContent,
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      tocDisabled = disabled();
+      toc && toc.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+  });
+})();
+(function() {
+  var SOURCES = window.TEXT_VARIABLES.sources;
+  window.Lazyload.js(SOURCES.jquery, function() {
+    var $window = $(window), $pageFooter = $('.js-page-footer');
+    var $pageAside = $('.js-page-aside');
+    var affix;
+    var tocDisabled = false;
+    var hasSidebar = $('.js-page-root').hasClass('layout--page--sidebar');
+
+    affix = $pageAside.affix({
+      offsetBottom: $pageFooter.outerHeight(),
+      scrollTarget: hasSidebar ? '.js-page-main' : null,
+      scroller: hasSidebar ? '.js-page-main' : null,
+      scroll: hasSidebar ? $('.js-page-main').children() : null,
+      disabled: tocDisabled
+    });
+
+    $window.on('resize', window.throttle(function() {
+      affix && affix.setOptions({
+        disabled: tocDisabled
+      });
+    }, 100));
+
+    window.pageAsideAffix = affix;
+  });
+})();
+</script><script>
+  window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
+    var $canvas = null, $this = null, _ctx = null, _text = '';
+    $('.language-chart').each(function(){
+      $this = $(this);
+      $canvas = $('<canvas></canvas>');
+      _text = $this.text();
+      $this.text('').append($canvas);
+      _ctx = $canvas.get(0).getContext('2d');
+      (_ctx && _text) && (new Chart(_ctx, JSON.parse(_text)) && $this.attr('data-processed', true));
+    });
+  });
+</script>
+<script type="text/x-mathjax-config">
+	var _config = { tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']]
+	}};MathJax.Hub.Config(_config);
+</script>
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
+    </div>
+    <script>(function () {
+  var $root = document.getElementsByClassName('root')[0];
+  if (window.hasEvent('touchstart')) {
+    $root.dataset.isTouch = true;
+    document.addEventListener('touchstart', function(){}, false);
+  }
+})();
+</script>
+  </body>
+</html>
+

@@ -1,0 +1,327 @@
+I"�B<h3 id="画家算法">画家算法</h3>
+
+<p>在将场景投影到平面之前，还需要处理物体之间的遮挡关系。比如下面这张图左边的景色，在屏幕中成像的顺序根据远近分别为雪山、草地、树木。而在正方体图形中，成像顺序是先成像最远的面，再成像周围四个面，最后是最近的面。对于周围的四个面也需要设置一定的顺序使视图符合物理规则。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-cover1.png" />
+</center>
+
+<p>但是对于下面这种摆放的物体，任何顺序都没有办法完全实现图中表述的位置关系。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-cover2.png" />
+</center>
+
+<h3 id="z-buffer">Z Buffer</h3>
+
+<p>在实际使用中，我们不会用画家算法渲染图像，而是使用Z Buffer方法。Z Buffer方法有几个特点：</p>
+
+<ul>
+  <li>对每个图像中的像素存储当前最小的z值</li>
+  <li>需要一个额外的buffer存储深度值（这也是Z Buffer名称的由来）
+    <ul>
+      <li>frame buffer</li>
+      <li>depth buffer (为了简明性，我们认为z永远是正的)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Z-Buffer 算法</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for (each triangle T)
+    for (each sample(x,y,z) in T)
+        if (z &lt; zbuffer[x,y])
+            framebuffer[x,y] = rgb
+            zbuffer[x,y] = z
+</code></pre></div></div>
+
+<p>复杂度： 对于n个三角形，计算复杂度为O（n）,但对于n个三角形的处理，可以使用多线程加快处理速度。</p>
+
+<h3 id="着色-shading">着色 （Shading）</h3>
+
+<p>着色表示对不同材料应用不同属性
+根据材质和位置不同，反光区域分为</p>
+<ul>
+  <li>镜面高光区域（Specular highlights）</li>
+  <li>漫反射区域 （Diffuse reflection）</li>
+  <li>环境光区域 (Ambient lighting)</li>
+  <li>
+    <h4 id="漫反射">漫反射</h4>
+  </li>
+</ul>
+
+<p>漫反射的亮度和表面法向量和光源的夹角有关，夹角越小接受的能量越大，越明亮。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-diffuse_reflection.png" />
+</center>
+
+<p>此外表面亮度还和距离光源的远近有关，光强与距离的平方成反比。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-fall_off.png" />
+</center>
+
+<p>因此漫反射光的计算公式如下图，包括漫反射系数、不同距离的能量强度和反射面夹角这三个影响因素。<strong>对于漫反射，观测的角度不会影响表面的亮度，因为漫反射表面会均匀地向四周发射光波</strong>。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-diffuse_energy.png" />
+</center>
+
+<h4 id="镜面反射高光区域blinn-phong">镜面反射高光区域(Blinn-Phong)</h4>
+
+<p>在近似镜面的材质上，只有在反射光线很小的角度范围内才可以观察到。如下图所示，当观察角度与反射角度相近时，入射角度$\mathbf{n}$和观察角度$\mathbf{v}$的半程向量与平面的法向量很相近。其中半程向量表示的是观察角度与反射角度的<strong>角平分线方向</strong>的单位向量。</p>
+
+<p>高光区域的表示公式如下，其中镜面反射系数为$k_s$，$max(0,\mathbf{n}\cdot \mathbf{h})$表示观察角度与入射角的夹角，指数$p$是为了使该项随角度的变化更加陡峭，实际中该指数项为100左右。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-mirror_reflection.png" />
+</center>
+
+<h4 id="环境光照">环境光照</h4>
+
+<p>在物体背向光源的区域仍然可以被观察到，这是因为环境光照的原因。环境光照与观测角度无关。</p>
+
+\[L_a=k_aI_a\]
+
+<h4 id="着色公式">着色公式</h4>
+
+<p>综合三种反射模型，一个物体表面的着色公式可以表示为：</p>
+
+\[\begin{aligned}
+L &amp;= L_a + L_d + L_s \\
+  &amp;=k_aI_a+k_d(I/r^2)max(0,\mathbf{n}\cdot\mathbf{l}) + k_s(I/r^2)max(0,\mathbf{n}\cdot\mathbf{h})
+\end{aligned}\]
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading.png" />
+</center>
+
+<h3 id="着色频率">着色频率</h3>
+<p>根据着色的方式不同，着色可以分为</p>
+<ol>
+  <li>平面着色(Flat shading)：根据分割的平面区域分别着色，对于平滑的表面效果不好。</li>
+  <li>顶点着色(Gouraud shading)：根据三角形的顶点计算着色数值，并在每个三角形内进行插值。</li>
+  <li>像素点着色(Phong shading)：计算每个像素点对应的数值。</li>
+</ol>
+
+<p>下图所示为三种不同的着色方式，最左边是平面着色，中间是顶点着色，右边是像素点着色。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading_frequence.png" />
+</center>
+
+<p>随着着色频率的提高，也就是采样的面、三角形、像素数量越多，三种方法的着色效果都会越来越好。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading_frequence1.png" />
+</center>
+
+<h4 id="顶点着色gouraud-shading中顶点法向量的计算">顶点着色(Gouraud shading)中顶点法向量的计算</h4>
+<p>顶点的法向量是根据该顶点周围的平面法向量的加权得到的。如下图所示，点$v$的法向量是由周围4个平面的法向量加权得到的。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-gouraud_shading.png" />
+</center>
+
+<p>因此该点的法向量通过下面公式可以计算得到，该公式是最基本的计算方式。更加有效的方法是<strong>根据三角形的面积大小对向量加权求和</strong>。
+\(N_v=\frac{\sum_iN_i}{\lVert \sum_iN_i\rVert}\)</p>
+
+<h4 id="像素点着色phong-shading中顶点法向量的计算">像素点着色(Phong shading)中顶点法向量的计算</h4>
+<p>像素点着色就是已知顶点的法向量，然后根据像素位置插值得到内部的法向量，如下图所示。该步骤会使用到重心插值方法（barycentric interpolation）。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-phong_shading.png" />
+</center>
+
+<h5 id="重心坐标法">重心坐标法</h5>
+
+<p>重心坐标法解决的问题是，已知一个三角形的三个顶点，和三角形内部的一个点。如何对该点进行插值。</p>
+
+<p>对于任意一个三角形内部的点可以用三个顶点的加权和表示，如下图所示。三个权重的加和为1。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-barycentric_interpolation.png
+" />
+</center>
+
+<p>其中权重的大小与下图中顶点对应的三角形面积有关，可以发现，对应的三角形面积越小，对应的权重也越小。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-barycentric_interpolation1.png
+" />
+</center>
+
+<p>三角形的面积可以用叉乘的方法计算得到。也可以用下图中的公式计算。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-barycentric_interpolation2.png
+" />
+</center>
+
+<p><em>除了坐标外，任一点的属性如颜色、向量、深度等都可以用这三个权重插值计算得到。</em></p>
+
+<p>需要注意的一点是，<strong>重心坐标在投影之后位置会发生变化，因此要先找到三维的点，并对三维点插值后再投影到二维坐标。</strong></p>
+
+<h5 id="投影校正插值perspective-correct-interpolation">投影校正插值（Perspective Correct Interpolation）</h5>
+
+<p>对于屏幕空间上的一个三角形区域内的任意一个点，我们通过重心坐标法能够得到权重系数$\alpha,\beta,\gamma$。但这只是对应于屏幕上的三角形的权重，我们需要得到三维空间中的三角形对应的权重。</p>
+
+<p>首先我们先考虑二维空间下的深度计算。如下图所示，$(x_1,z_1),(x_0,z_0)$所在线段为屏幕，对应空间中的点为$(x’_1,z’_1),(x’_0,z’_0)$。现在的问题是，已知屏幕中一点$(x_p,z_p)$求空间中的点$(x’_p,z’_p)$。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-barycentric_interpolation3.png
+" />
+</center>
+
+<ol>
+  <li>根据三角形相似定理有：$\frac{x’}{x} =\frac{z’}{z}$</li>
+  <li>空间中的点满足直线方程：$ax+bz=c，c\ne0$</li>
+  <li>结合以上两个公式可以得到$\frac{1}{z’}=\frac{ax}{cz}+\frac{b}{c}$</li>
+</ol>
+
+<p>将$z’_p$代入公式：</p>
+
+\[\begin{aligned}
+\frac{1}{z'_p}&amp;=\frac{ax_p}{cz_p}+\frac{b}{c}\\
+&amp;=\frac{a((1-t)x_0+tx_1)}{cz} + \frac{b}{c}\\
+&amp;=(1-t)(\frac{ax_0}{c}+\frac{b}{c})+t(\frac{ax_1}{c}+\frac{b}{c}) \\
+&amp;=(1-t)\frac{1}{z'_0}+t\frac{1}{z'_1}
+\end{aligned}\]
+
+<p>根据公式$\frac{1}{z’_p}=(1-t)\frac{1}{z_0}+t\frac{1}{z_1}$我们发现屏幕上的一点在空间中对应的点关于z的倒数是线性的。根据这个规律，我们用z对三角形中任意一点的属性$b_p$插值,有以下线性关系：</p>
+
+\[\frac{b_p-b_0}{b_1-b_0}=\frac{z'_p-z'_0}{z'_1-z'_0}\]
+
+<p>将$z’_p=\frac{1}{(1-t)\frac{1}{z_0}+t\frac{1}{z_1}}$代入上式，化简得到：</p>
+
+\[\begin{aligned}
+b_p&amp;=\frac{(1-t)\frac{b_0}{z'_0}+t\frac{b_1}{z'_1}}{(1-t)\frac{1}{z'_0}+t\frac{1}{z'_1}}\\
+&amp;=z_p\left[(1-t)\frac{b_0}{z'_0}+t\frac{b_1}{z'_1} \right]
+\end{aligned}\]
+
+<p>下图中三角形内的方格与直角边平行，左图和右图分别为不经过校正和经过校正之后插值得到屏幕投影，很明显不经过透视校正插值的结果的错误的。</p>
+<center>
+<table><tr>
+<td>&lt;img src=https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-barycentric_interpolation4.png height=200 border=0&gt;</td>
+<td>&lt;img src=https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-barycentric_interpolation5.png height=200 border=0&gt;</td>
+</tr></table>
+</center>
+
+<h3 id="实时渲染管线real-time-rendering-pipeline">实时渲染管线（Real-time Rendering Pipeline）</h3>
+
+<p>实时渲染步骤包括：</p>
+<ol>
+  <li>将3D空间中的点投影到屏幕空间中-&gt;<strong>Vertex Stream</strong></li>
+  <li>将屏幕中的顶点连接成三角形-&gt;<strong>Triangle Stream</strong></li>
+  <li>将三角形内部的点光栅化为像素点-&gt;<strong>Fragment Stream</strong>
+    <ol>
+      <li>光栅化</li>
+      <li>深度测试（Z Buffer）</li>
+    </ol>
+  </li>
+  <li>将像素点着色-&gt;<strong>Shaded fragments</strong></li>
+  <li>将着色的三角形拼接成完整的图像-&gt;<strong>Output image</strong></li>
+</ol>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-pipeline.png" />
+</center>
+
+<h3 id="纹理">纹理</h3>
+
+<p>我们着色时需要根据外表的纹理对每个像素计算对应的值。</p>
+
+<p>我们可以发现任何一个三维物体的表面都是二维的，所以物体表面的纹理可以用二维的图表示，纹理映射就是获得纹理和物体表面的映射关系。</p>
+
+<p>如下图所示，三维表面的三角形顶点在右边的二维图片中都有相应的对应点。</p>
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading_texture.png" />
+</center>
+
+<p>由于映射的纹理和实际的像素没办法一一对应，有些时候投影后的一个纹理会包括多个像素点，有些时候一个像素会包括多个纹理。为了使着重的着色效果更好，就需要讨论到纹理和像素之间的映射方法。</p>
+
+<h4 id="纹理映射">纹理映射</h4>
+<ol>
+  <li>对于屏幕中的每一个像素点（x,y），计算对应的纹理坐标（u，v）-&gt; 重心坐标法</li>
+  <li>查询坐标（u,v）所对应的纹理，包括反射率等信息</li>
+  <li>运用反射模型计算对应的颜色 -&gt;Blinn-Phong模型</li>
+</ol>
+
+<h4 id="纹理映射存在的问题">纹理映射存在的问题</h4>
+
+<h5 id="当纹理分辨率低于屏幕分辨率">当纹理分辨率低于屏幕分辨率</h5>
+<p>当纹理分辨率低于屏幕分辨率时，如果像素点只找最临近的纹理就会出现锯齿。为了提高画面的细腻程度，需要对像素点的颜色进行插值。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading_texture1.png" />
+</center>
+
+<h5 id="双线性插值">双线性插值</h5>
+
+<p>双线性插值是分别在水平和竖直上对周围最相邻的两个点插值。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading_texture2.png" />
+</center>
+
+<h5 id="当纹理分辨率高于屏幕分辨率">当纹理分辨率高于屏幕分辨率</h5>
+<p>当纹理分辨率高于屏幕分辨率时，则会出现走样的问题，如下图所示，图中的远处，一个像素内部有多个纹素。解决走样的问题可以使用MSAA方法进行超采样解决，但该方法十分费时。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading_texture3.png" />
+</center>
+
+<p>为了更为高效地解决这个问题，我们不使用采样地方法，而是只需要<strong>获得一个范围内的平均值就可以</strong>。</p>
+
+<p>该问题可以理解为一个<strong>范围查询</strong>的问题。我们上面讲到的双线性插值是一个<strong>点查询</strong>问题。二者的不同是范围查询询问的是一个范围内的值，而点查询询问的是最近邻点的值。</p>
+
+<p>在我们的问题中，就是给定一个点，再给定一个区域。如何快速地知道这个区域的平均值是多少。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-shading_texture4.png" />
+</center>
+
+<h5 id="mipmap">Mipmap</h5>
+
+<p>Mipmap是一种范围查询方法，它有以下特点：</p>
+<ol>
+  <li><strong>快速</strong></li>
+  <li><strong>近似</strong></li>
+  <li><strong>只能做正方形的范围查询</strong></li>
+</ol>
+
+<p>mipmap方法首先要对纹理图像生成不同层次的图像。如下图所示，层次越高，分辨率越低。并且降低的倍数为1/2。这部分操作需要耗费额外的1/3的存储。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-mipmap.png" />
+</center>
+
+<p>然后我们将屏幕空间的像素（x,y）映射到纹理空间(u,v)。之后就可以计算像素空间中的近邻点在纹理空间中的距离。最终的距离L可以根据下图的公式计算得到。而层数为</p>
+
+\[D=log_2L\]
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-mipmap1.png" />
+</center>
+
+<p>通过上面的方法，我们就可以得到采样点对应的层数，我们只需要在对应层数的图像上索引对应的值即可。</p>
+
+<p>但是由于层数为整数值，如果按照取整的方法会出现<strong>不连续</strong>的情况。因此我们计算得到D之后，我们<strong>对D所在的两层之间插值</strong>得到D所对应的值。如下图所示，分别在两个层内部做双线性插值之后再将两个结果插值。该方法叫做<strong>三线性插值（Trilinear Interpolation）</strong>。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-mipmap2.png" />
+</center>
+
+<ul>
+  <li>Mipmap的缺陷</li>
+</ul>
+
+<p>下图是经过Mipmap插值之后的的图片。近处的图像效果正常，但远处的细节完全消失，出现过模糊（Overblur）的问题。这是因为Mipmap只能处理正方形的图块，没有办法处理像素投影到纹理空间后呈长条状的情况。</p>
+
+<h5 id="各向异性滤波anisotropic-filtering">各向异性滤波（Anisotropic Filtering）</h5>
+
+<p>各项异性滤波和Mipmap的不同之处是生成了长宽比不一样的一系列图像。通过这种方法将原本的正方形近似扩大到矩形近似。</p>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-anisotropic.png" />
+</center>
+
+<center>
+    <img src="https://xpx-picbed.oss-cn-beijing.aliyuncs.com/blog/2020/04/shading-anisotropic.png" />
+</center>
+<p>但是各向异性滤波方法还是存在问题，就是没有办法近似倾斜的多边形。</p>
+
+<h5 id="椭圆加权平均滤波ewa-filtering">椭圆加权平均滤波（EWA Filtering）</h5>
+
+<p>EWA方法与Miamap方法和各向异性滤波方法在图像层和距离的计算上相同，不同之处在于使用椭圆的长宽表示覆盖的区域。得到椭圆之后确定对应的包围盒，并询问在椭圆内部的纹素并求平均。</p>
+:ET

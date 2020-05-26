@@ -295,7 +295,7 @@
 <!-- end custom main top snippet -->
 <article itemscope itemtype="http://schema.org/Article"><div class="article__header">
 <header><h1>Welcome</h1></header><span class="split-space"> </span>
-          <a class="edit-on-github" title="Edit on Github" href="https://github.com/user_name/repo_name/tree/master/_posts/2018-07-01-welcome.md">
+          <a class="edit-on-github" title="Edit on Github" href="https://github.com/xjxpx/xjxpx.github.io/tree/master/_posts/2018-07-01-welcome.md">
             <i class="far fa-edit"></i></a>
 </div>
 <meta itemprop="headline" content="Welcome">
@@ -307,7 +307,7 @@
 <i class="far fa-calendar-alt"></i> <span>Jul 01, 2018</span>
             </li></ul>
 </div>
-<meta itemprop="author" content="Your Name">
+<meta itemprop="author" content="XPX">
 <meta itemprop="datePublished" content="2018-07-01T00:00:00+08:00">
     <meta itemprop="keywords" content="TeXt">
 <div class="js-article-content">
@@ -345,6 +345,9 @@
       </a>
     </p>
   </div></div></footer>
+<div class="article__section-navigator clearfix"><div class="next">
+<span>NEXT</span><a href="/2020/03/26/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6-%E5%8F%98%E6%8D%A2.html">计算机图形学（一）——变换</a>
+</div></div>
 </div>
 
 </div>
@@ -384,12 +387,27 @@
 <footer class="footer py-4 js-page-footer">
   <div class="main">
 <div itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Your Name">
-<meta itemprop="url" content="/">
-<meta itemprop="description" content="I am an amazing person.">
+      <meta itemprop="name" content="XPX">
+<meta itemprop="url" content="/xjxpx.github.io">
 <div class="footer__author-links">
 <div class="author-links">
-  <ul class="menu menu--nowrap menu--inline"></ul>
+  <ul class="menu menu--nowrap menu--inline">
+<link itemprop="url" href="xjxpx.github.io">
+<li title="Send me an Email.">
+      <a class="button button--circle mail-button" itemprop="email" href="mailto:xuepeixin2016@gmail.com" target="_blank">
+        <i class="fas fa-envelope"></i>
+      </a>
+</li>
+<li title="Follow me on Github.">
+        <a class="button button--circle github-button" itemprop="sameAs" href="https://github.com/xjxpx" target="_blank">
+          <div class="icon">
+<svg fill="#000000" width="24px" height="24px" viewbox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path class="svgpath" data-index="path_0" fill="#272636" d="M0 525.2c0 223.6 143.3 413.7 343 483.5 26.9 6.8 22.8-12.4 22.8-25.4l0-88.7c-155.3 18.2-161.5-84.6-172-101.7-21.1-36-70.8-45.2-56-62.3 35.4-18.2 71.4 4.6 113.1 66.3 30.2 44.7 89.1 37.2 119 29.7 6.5-26.9 20.5-50.9 39.7-69.6C248.8 728.2 181.7 630 181.7 513.2c0-56.6 18.7-108.7 55.3-150.7-23.3-69.3 2.2-128.5 5.6-137.3 66.5-6 135.5 47.6 140.9 51.8 37.8-10.2 80.9-15.6 129.1-15.6 48.5 0 91.8 5.6 129.8 15.9 12.9-9.8 77-55.8 138.8-50.2 3.3 8.8 28.2 66.7 6.3 135 37.1 42.1 56 94.6 56 151.4 0 117-67.5 215.3-228.8 243.7 26.9 26.6 43.6 63.4 43.6 104.2l0 128.8c0.9 10.3 0 20.5 17.2 20.5C878.1 942.4 1024 750.9 1024 525.3c0-282.9-229.3-512-512-512C229.1 13.2 0 242.3 0 525.2L0 525.2z"></path>
+</svg>
+</div>
+        </a>
+      </li>
+</ul>
 </div>
 </div>
     </div>
@@ -984,7 +1002,26 @@ window.Lazyload.js([SOURCES.jquery, PAHTS.search_js], function() {
     window.pageAsideAffix = affix;
   });
 })();
+</script><script>
+  window.Lazyload.js(['https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js', 'https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js'], function() {
+    var $canvas = null, $this = null, _ctx = null, _text = '';
+    $('.language-chart').each(function(){
+      $this = $(this);
+      $canvas = $('<canvas></canvas>');
+      _text = $this.text();
+      $this.text('').append($canvas);
+      _ctx = $canvas.get(0).getContext('2d');
+      (_ctx && _text) && (new Chart(_ctx, JSON.parse(_text)) && $this.attr('data-processed', true));
+    });
+  });
 </script>
+<script type="text/x-mathjax-config">
+	var _config = { tex2jax: {
+		inlineMath: [['$','$'], ['\\(','\\)']]
+	}};MathJax.Hub.Config(_config);
+</script>
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+
     </div>
     <script>(function () {
   var $root = document.getElementsByClassName('root')[0];
