@@ -1,8 +1,75 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="24px" height="24px" viewBox="0 0 24 24">
-<style type="text/css">
-	.st0{fill:#515151;}
-</style>
-<path class="st0" d="M1.7,22.3c5.7-5.7,11.3-5.7,17,0c3.3-3.3,3.5-5.3,0.8-6c2.7,0.7,3.5-1.1,2.3-5.6s-3.3-5.2-6.3-2.1
-	c3-3,2.3-5.2-2.1-6.3S7,1.8,7.7,4.6C7,1.8,5,2.1,1.7,5.3C7.3,11,7.3,16.7,1.7,22.3"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24mm"
+   height="24mm"
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="logo.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6"
+     inkscape:cx="93.005383"
+     inkscape:cy="39.818359"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-273)">
+    <g
+       aria-label="xpx"
+       transform="matrix(0.33507551,0,0,0.35618114,-62.863694,114.73343)"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.76587105"
+       id="flowRoot815">
+      <path
+         d="m 201.3296,466.92238 h 7.76533 v 4.56533 q 0,2.09067 -0.59733,3.24267 -0.59733,1.152 -1.92,2.048 1.32267,0.81066 1.92,1.96266 0.59733,1.152 0.59733,3.11467 v 5.84533 h -7.76533 v -6.272 q 0,-2.13333 -1.49333,-2.13333 -1.45067,0 -1.45067,1.83467 v 6.57066 h -7.808 v -5.54666 q 0,-2.00534 0.72533,-3.15734 0.72534,-1.19466 2.38934,-2.21866 -1.664,-1.06667 -2.38934,-2.304 -0.72533,-1.23734 -0.72533,-3.28534 v -4.26666 h 7.808 v 5.248 q 0,0.85333 0.384,1.36533 0.384,0.512 1.024,0.512 1.536,0 1.536,-1.87733 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:STHupo;-inkscape-font-specification:STHupo;stroke-width:0.76587105"
+         id="path826" />
+      <path
+         d="m 220.67227,495.33838 h -7.808 v -17.32267 q 0,-5.07733 3.02933,-8.32 3.072,-3.24267 7.68,-3.24267 4.65067,0 7.85067,3.15734 3.2,3.11466 3.2,7.63733 0,4.52267 -3.24267,7.72267 -3.2,3.2 -7.63733,3.2 -0.93867,0 -1.87734,-0.17067 v -8.576 q 0.93867,0.72533 1.96267,0.72533 1.19467,0 2.048,-0.85333 0.85333,-0.896 0.85333,-2.176 0,-1.19467 -0.896,-2.048 -0.896,-0.896 -2.13333,-0.896 -3.02933,0 -3.02933,4.13867 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:STHupo;-inkscape-font-specification:STHupo;stroke-width:0.76587105"
+         id="path828" />
+      <path
+         d="m 248.49627,466.92238 h 7.76533 v 4.56533 q 0,2.09067 -0.59733,3.24267 -0.59734,1.152 -1.92,2.048 1.32266,0.81066 1.92,1.96266 0.59733,1.152 0.59733,3.11467 v 5.84533 h -7.76533 v -6.272 q 0,-2.13333 -1.49334,-2.13333 -1.45066,0 -1.45066,1.83467 v 6.57066 h -7.808 v -5.54666 q 0,-2.00534 0.72533,-3.15734 0.72533,-1.19466 2.38933,-2.21866 -1.664,-1.06667 -2.38933,-2.304 -0.72533,-1.23734 -0.72533,-3.28534 v -4.26666 h 7.808 v 5.248 q 0,0.85333 0.384,1.36533 0.384,0.512 1.024,0.512 1.536,0 1.536,-1.87733 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.66666794px;font-family:STHupo;-inkscape-font-specification:STHupo;stroke-width:0.76587105"
+         id="path830" />
+    </g>
+  </g>
 </svg>
