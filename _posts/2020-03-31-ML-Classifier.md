@@ -8,7 +8,7 @@ tags:
     - 机器学习
     - 评价指标
 ---
-> [我的博客](http://xjxpx.github.io)
+> [我的博客](http://xuepeixin.github.io)
 
 分类器常用的评价指标有：
 

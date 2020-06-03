@@ -36,7 +36,7 @@ timezone: # see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for
 author:
   type      : # "person" (default), "organization"
   name      : XPX
-  url       : xjxpx.github.io
+  url       : xuepeixin.github.io
   avatar    : # path or url of avatar image (square)
   bio       : 
   email     : xuepeixin2016@gmail.com
@@ -49,13 +49,13 @@ author:
   zhihu     : # "user_name" the last part of your profile url, e.g. https://www.zhihu.com/people/user_name
   douban    : # "user_name" the last part of your profile url, e.g. https://www.douban.com/people/user_name
   linkedin  : # "user_name" the last part of your profile url, e.g. https://www.linkedin.com/in/user_name
-  github    : xjxpx # "user_name" the last part of your profile url, e.g. https://github.com/user_name
+  github    : xuepeixin # "user_name" the last part of your profile url, e.g. https://github.com/user_name
   npm       : # "user_name" the last part of your profile url, e.g. https://www.npmjs.com/~user_name
 
 
 ## => GitHub Repository (if the site is hosted by GitHub)
 ##############################
-repository: xjxpx/xjxpx.github.io
+repository: xuepeixin/xuepeixin.github.io
 repository_tree: master
 
 
@@ -88,7 +88,7 @@ mathjax: true # false (default), true
 mathjax_autoNumber: # false (default), true
 
 ## Mermaid
-mermaid: # false (default), true
+mermaid: true # false (default), true
 
 ## Chart
 chart: true # false (default), true
