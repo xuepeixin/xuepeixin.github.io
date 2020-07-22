@@ -18,3 +18,15 @@ sudo apt update
 
 sudo apt install touchpad-indicator
 ```
+
+
+[实现ubuntu18.04 插上外部鼠标禁用触摸板的功能 ](https://my.oschina.net/lvhongqing/blog/3155060)
+命令行输入dconf-editor
+
+查找touchpad
+
+进入 send-events
+
+将最下面的custom value改为
+
+disabled-on-external-mouse
