@@ -1,6 +1,6 @@
 ---
 title:     Linux Tool
-date:       2020-07-19
+date:       2020-07-22
 author:     XPX
 catalog: true
 tags:
