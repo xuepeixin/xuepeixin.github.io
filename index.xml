@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+      <title>XPX PKM</title>
+      <link>https://xuepeixin.github.io</link>
+      <description>最近的10条笔记 on XPX PKM</description>
+      <generator>Quartz -- quartz.jzhao.xyz</generator>
+      <item>
+    <title>XPX PKM</title>
+    <link>https://xuepeixin.github.io/</link>
+    <guid>https://xuepeixin.github.io/</guid>
+    <description><![CDATA[ 欢迎来到 XPX PKM。 公开内容入口： Blog . ]]></description>
+    <pubDate>Wed, 11 Mar 2026 15:53:19 GMT</pubDate>
+  </item><item>
+    <title>我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的</title>
+    <link>https://xuepeixin.github.io/blog/building-a-telegram-obsidian-journal-agent</link>
+    <guid>https://xuepeixin.github.io/blog/building-a-telegram-obsidian-journal-agent</guid>
+    <description><![CDATA[ 我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的 最近我一直在折腾一件很具体、也很个人的事： 怎么把我平时在 Telegram 里产生的语音、碎片想法、链接和临时感受，稳定地沉淀进 Obsidian，而不是永远散落在聊天记录里。 这个问题看起来不大，但它其实卡了我很久。 真正折磨人的，从来不是“我没有工具”，而是这些很具体的小失控： 语音说完就没了 临时想法过两天找不到 链接和素材堆在聊天框里，根本谈不上整理 就算有 agent，也常常只是“会回复”，不会真正落盘 所以这次我想做的，不是再加一个会聊天的 bot，而是搭一个 独立的日志... ]]></description>
+    <pubDate>Tue, 10 Mar 2026 00:00:00 GMT</pubDate>
+  </item><item>
+    <title>我把 Obsidian 改造成了一个能承接多 Agent 的知识系统</title>
+    <link>https://xuepeixin.github.io/blog/restructuring-my-obsidian-for-multi-agent-workflows</link>
+    <guid>https://xuepeixin.github.io/blog/restructuring-my-obsidian-for-multi-agent-workflows</guid>
+    <description><![CDATA[ 我把 Obsidian 改造成了一个能承接多 Agent 的知识系统 我最近越来越强烈地感觉到： 如果 Agent 真的开始进入你的知识系统，问题很快就不再是“它聪不聪明”，而是“你的结构扛不扛得住”。 过去一段时间，我一直在尝试让 Agent 真正融入我的 Obsidian 工作流。 最开始的想法其实很朴素：给 Obsidian 接一个 Agent，让它帮我写日志、整理语音、保存素材、生成草稿。 这个方案并不难启动，但真正跑起来之后，我很快发现，问题不在“能不能写文件”，而在“边界到底怎么定义”。 如果只有一个 Agent、一个 vault，而且所有东西都往同一个地方塞，系统确实能工作，但它... ]]></description>
+    <pubDate>Tue, 10 Mar 2026 00:00:00 GMT</pubDate>
+  </item>
+    </channel>
+  </rss>

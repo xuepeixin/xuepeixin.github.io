@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh" dir="ltr"><head><title>我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted Grotesk:wght@400;700&amp;family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=IBM Plex Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="XPX PKM"/><meta property="og:title" content="我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的"/><meta name="twitter:description" content="我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的 最近我一直在折腾一件很具体、也很个人的事： 怎么把我平时在 Telegram 里产生的语音、碎片想法、链接和临时感受，稳定地沉淀进 Obsidian，而不是永远散落在聊天记录里。 这个问题看起来不大，但它其实卡了我很久。 真正折磨人的，从来不是“我没有工具”，而是这些很具体的小失控： 语音说完就没了 临时想法过两天找不到 链接和素材堆在聊天框里，根本谈不上整理 就算有 agent，也常常只是“会回复”，不会真正落盘 所以这次我想做的，不是再加一个会聊天的 bot，而是搭一个 独立的日志..."/><meta property="og:description" content="我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的 最近我一直在折腾一件很具体、也很个人的事： 怎么把我平时在 Telegram 里产生的语音、碎片想法、链接和临时感受，稳定地沉淀进 Obsidian，而不是永远散落在聊天记录里。 这个问题看起来不大，但它其实卡了我很久。 真正折磨人的，从来不是“我没有工具”，而是这些很具体的小失控： 语音说完就没了 临时想法过两天找不到 链接和素材堆在聊天框里，根本谈不上整理 就算有 agent，也常常只是“会回复”，不会真正落盘 所以这次我想做的，不是再加一个会聊天的 bot，而是搭一个 独立的日志..."/><meta property="og:image:alt" content="我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的 最近我一直在折腾一件很具体、也很个人的事： 怎么把我平时在 Telegram 里产生的语音、碎片想法、链接和临时感受，稳定地沉淀进 Obsidian，而不是永远散落在聊天记录里。 这个问题看起来不大，但它其实卡了我很久。 真正折磨人的，从来不是“我没有工具”，而是这些很具体的小失控： 语音说完就没了 临时想法过两天找不到 链接和素材堆在聊天框里，根本谈不上整理 就算有 agent，也常常只是“会回复”，不会真正落盘 所以这次我想做的，不是再加一个会聊天的 bot，而是搭一个 独立的日志..."/><meta property="twitter:domain" content="xuepeixin.github.io"/><meta property="og:url" content="https://xuepeixin.github.io/blog/building-a-telegram-obsidian-journal-agent"/><meta property="twitter:url" content="https://xuepeixin.github.io/blog/building-a-telegram-obsidian-journal-agent"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的 最近我一直在折腾一件很具体、也很个人的事： 怎么把我平时在 Telegram 里产生的语音、碎片想法、链接和临时感受，稳定地沉淀进 Obsidian，而不是永远散落在聊天记录里。 这个问题看起来不大，但它其实卡了我很久。 真正折磨人的，从来不是“我没有工具”，而是这些很具体的小失控： 语音说完就没了 临时想法过两天找不到 链接和素材堆在聊天框里，根本谈不上整理 就算有 agent，也常常只是“会回复”，不会真正落盘 所以这次我想做的，不是再加一个会聊天的 bot，而是搭一个 独立的日志..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL2hvbWUvcnVubmVyL3dvcmsvX3RlbXAvcXVhcnR6L3F1YXJ0ei9jb21wb25lbnRzL3N0eWxlcyIsInNvdXJjZXMiOlsibWVybWFpZC5pbmxpbmUuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBR0Y7RUFDRTs7O0FBS0Y7RUFDRTtFQUNBOzs7QUFJSjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTs7QUFHRjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTs7QUFHRjtFQUNFO0VBQ0E7O0FBSUo7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7O0FBSUY7RUFDRTtFQUNBO0VBQ0EiLCJzb3VyY2VzQ29udGVudCI6WyIuZXhwYW5kLWJ1dHRvbiB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBwYWRkaW5nOiAwLjRyZW07XG4gIG1hcmdpbjogMC4zcmVtO1xuICByaWdodDogMDsgLy8gTk9URTogcmlnaHQgd2lsbCBiZSBzZXQgaW4gbWVybWFpZC5pbmxpbmUudHNcbiAgY29sb3I6IHZhcigtLWdyYXkpO1xuICBib3JkZXItY29sb3I6IHZhcigtLWRhcmspO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gIGJvcmRlcjogMXB4IHNvbGlkO1xuICBib3JkZXItcmFkaXVzOiA1cHg7XG4gIG9wYWNpdHk6IDA7XG4gIHRyYW5zaXRpb246IDAuMnM7XG5cbiAgJiA+IHN2ZyB7XG4gICAgZmlsbDogdmFyKC0tbGlnaHQpO1xuICAgIGZpbHRlcjogY29udHJhc3QoMC4zKTtcbiAgfVxuXG4gICY6aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBib3JkZXItY29sb3I6IHZhcigtLXNlY29uZGFyeSk7XG4gIH1cblxuICAmOmZvY3VzIHtcbiAgICBvdXRsaW5lOiAwO1xuICB9XG59XG5cbnByZSB7XG4gICY6aG92ZXIgPiAuZXhwYW5kLWJ1dHRvbiB7XG4gICAgb3BhY2l0eTogMTtcbiAgICB0cmFuc2l0aW9uOiAwLjJzO1xuICB9XG59XG5cbiNtZXJtYWlkLWNvbnRhaW5lciB7XG4gIHBvc2l0aW9uOiBmaXhlZDtcbiAgY29udGFpbjogbGF5b3V0O1xuICB6LWluZGV4OiA5OTk7XG4gIGxlZnQ6IDA7XG4gIHRvcDogMDtcbiAgd2lkdGg6IDEwMHZ3O1xuICBoZWlnaHQ6IDEwMHZoO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBkaXNwbGF5OiBub25lO1xuICBiYWNrZHJvcC1maWx0ZXI6IGJsdXIoNHB4KTtcbiAgYmFja2dyb3VuZDogcmdiYSgwLCAwLCAwLCAwLjUpO1xuXG4gICYuYWN0aXZlIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIH1cblxuICAmID4gI21lcm1haWQtc3BhY2Uge1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tbGlnaHQpO1xuICAgIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgICBwb3NpdGlvbjogZml4ZWQ7XG4gICAgdG9wOiA1MCU7XG4gICAgbGVmdDogNTAlO1xuICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlKC01MCUsIC01MCUpO1xuICAgIGhlaWdodDogODB2aDtcbiAgICB3aWR0aDogODB2dztcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRlbnQge1xuICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgdHJhbnNmb3JtLW9yaWdpbjogMCAwO1xuICAgICAgdHJhbnNpdGlvbjogdHJhbnNmb3JtIDAuMXMgZWFzZTtcbiAgICAgIG92ZXJmbG93OiB2aXNpYmxlO1xuICAgICAgbWluLWhlaWdodDogMjAwcHg7XG4gICAgICBtaW4td2lkdGg6IDIwMHB4O1xuXG4gICAgICBwcmUge1xuICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgIGJvcmRlcjogbm9uZTtcbiAgICAgIH1cblxuICAgICAgc3ZnIHtcbiAgICAgICAgbWF4LXdpZHRoOiBub25lO1xuICAgICAgICBoZWlnaHQ6IGF1dG87XG4gICAgICB9XG4gICAgfVxuXG4gICAgJiA+IC5tZXJtYWlkLWNvbnRyb2xzIHtcbiAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgIGJvdHRvbTogMjBweDtcbiAgICAgIHJpZ2h0OiAyMHB4O1xuICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgIGdhcDogOHB4O1xuICAgICAgcGFkZGluZzogOHB4O1xuICAgICAgYmFja2dyb3VuZDogdmFyKC0tbGlnaHQpO1xuICAgICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICAgIGJvcmRlci1yYWRpdXM6IDZweDtcbiAgICAgIGJveC1zaGFkb3c6IDAgMnB4IDRweCByZ2JhKDAsIDAsIDAsIDAuMSk7XG4gICAgICB6LWluZGV4OiAyO1xuXG4gICAgICAubWVybWFpZC1jb250cm9sLWJ1dHRvbiB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICB3aWR0aDogMzJweDtcbiAgICAgICAgaGVpZ2h0OiAzMnB4O1xuICAgICAgICBwYWRkaW5nOiAwO1xuICAgICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICAgIGNvbG9yOiB2YXIoLS1kYXJrKTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogNHB4O1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgIGZvbnQtc2l6ZTogMTZweDtcbiAgICAgICAgZm9udC1mYW1pbHk6IHZhcigtLWJvZHlGb250KTtcbiAgICAgICAgdHJhbnNpdGlvbjogYWxsIDAuMnMgZWFzZTtcblxuICAgICAgICAmOmhvdmVyIHtcbiAgICAgICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgICB9XG5cbiAgICAgICAgJjphY3RpdmUge1xuICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWSgxcHgpO1xuICAgICAgICB9XG5cbiAgICAgICAgLy8gU3R5bGUgdGhlIHJlc2V0IGJ1dHRvbiBkaWZmZXJlbnRseVxuICAgICAgICAmOm50aC1jaGlsZCgyKSB7XG4gICAgICAgICAgd2lkdGg6IGF1dG87XG4gICAgICAgICAgcGFkZGluZzogMCAxMnB4O1xuICAgICAgICAgIGZvbnQtc2l6ZTogMTRweDtcbiAgICAgICAgfVxuICAgICAgfVxuICAgIH1cbiAgfVxufVxuIl19 */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="../prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://xuepeixin.github.io/index.xml"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image" content="https://xuepeixin.github.io/blog/building-a-telegram-obsidian-journal-agent-og-image.webp"/><meta property="og:image:url" content="https://xuepeixin.github.io/blog/building-a-telegram-obsidian-journal-agent-og-image.webp"/><meta name="twitter:image" content="https://xuepeixin.github.io/blog/building-a-telegram-obsidian-journal-agent-og-image.webp"/><meta property="og:image:type" content="image/.webp"/></head><body data-slug="blog/building-a-telegram-obsidian-journal-agent"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">XPX PKM</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>搜索</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="搜索些什么" placeholder="搜索些什么"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="暗色模式"><title>暗色模式</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="亮色模式"><title>亮色模式</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="阅读模式"><title>阅读模式</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>探索</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-0" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../blog/">blog</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的</a></div></nav><h1 class="article-title">我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的</h1><p show-comma="true" class="content-meta"><time datetime="2026-03-10T00:00:00.000Z">2026年3月10日</time><span>13分钟阅读</span></p><ul class="tags"><li><a href="../tags/pkm" class="internal tag-link">pkm</a></li><li><a href="../tags/telegram" class="internal tag-link">telegram</a></li><li><a href="../tags/obsidian" class="internal tag-link">obsidian</a></li><li><a href="../tags/agent" class="internal tag-link">agent</a></li><li><a href="../tags/workflow" class="internal tag-link">workflow</a></li></ul></div></div><article class="popover-hint"><h1 id="我是怎么搭建一个-telegram-日志整理-agent并把-topic-工作流接进-obsidian-的">我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#我是怎么搭建一个-telegram-日志整理-agent并把-topic-工作流接进-obsidian-的" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<p>最近我一直在折腾一件很具体、也很个人的事：</p>
+<p><strong>怎么把我平时在 Telegram 里产生的语音、碎片想法、链接和临时感受，稳定地沉淀进 Obsidian，而不是永远散落在聊天记录里。</strong></p>
+<p>这个问题看起来不大，但它其实卡了我很久。</p>
+<p>真正折磨人的，从来不是“我没有工具”，而是这些很具体的小失控：</p>
+<ul>
+<li>语音说完就没了</li>
+<li>临时想法过两天找不到</li>
+<li>链接和素材堆在聊天框里，根本谈不上整理</li>
+<li>就算有 agent，也常常只是“会回复”，不会真正落盘</li>
+</ul>
+<p>所以这次我想做的，不是再加一个会聊天的 bot，而是搭一个 <strong>独立的日志整理 agent</strong>。它更像一个记录员，而不是一个泛用聊天助手。</p>
+<hr/>
+<h2 id="我想解决的几个真实痛点">我想解决的几个真实痛点<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#我想解决的几个真实痛点" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<h3 id="1-输入很多但沉淀断裂">1. 输入很多，但沉淀断裂<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#1-输入很多但沉淀断裂" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>我平时会在 Telegram 里发很多东西：</p>
+<ul>
+<li>一段语音</li>
+<li>一个念头</li>
+<li>一篇文章链接</li>
+<li>一个未来可能写成 blog 的主题</li>
+</ul>
+<p>这些内容的共同点是：<strong>它们都很容易进入系统，却很难进入知识库。</strong></p>
+<p>聊天工具天然适合输入，但并不天然适合沉淀。</p>
+<hr/>
+<h3 id="2-语音特别容易说完就算">2. 语音特别容易“说完就算”<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#2-语音特别容易说完就算" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>语音是最轻松的输入方式，但也是最容易丢失的输入方式。</p>
+<p>问题不在于“没有记录”，而在于它通常：</p>
+<ul>
+<li>不可快速检索</li>
+<li>不方便二次整理</li>
+<li>很难回看和引用</li>
+<li>更难直接进入写作流程</li>
+</ul>
+<p>所以如果没有一条稳定的“语音 → 文本 → 分类 → 归档”链路，语音最后往往只是情绪消费，而不是知识积累。</p>
+<hr/>
+<h3 id="3-日志素材草稿正式内容总是混在一起">3. 日志、素材、草稿、正式内容总是混在一起<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#3-日志素材草稿正式内容总是混在一起" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>我过去最大的一个问题，就是所有东西都很容易堆在一起：</p>
+<ul>
+<li>每日日志</li>
+<li>随手灵感</li>
+<li>素材摘录</li>
+<li>blog 草稿</li>
+<li>最终准备发布的内容</li>
+</ul>
+<p>当这些东西没有边界时，知识库最后就会变成一个高级杂物间。</p>
+<p>所以这次我很明确地做了一件事：</p>
+<p><strong>输入层、整理层、草稿层、发布层必须拆开。</strong></p>
+<hr/>
+<h2 id="我的目标方案">我的目标方案<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#我的目标方案" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>我最后想要的是这样一条链路：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>Telegram Topic</span></span>
+<span data-line><span>→ 独立 journal agent</span></span>
+<span data-line><span>→ Obsidian vault</span></span>
+<span data-line><span>→ daily / voice / clippings / drafts</span></span>
+<span data-line><span>→ Quartz 发布</span></span></code></pre></figure>
+<p>这里最关键的不是工具名，而是分层：</p>
+<ul>
+<li>Telegram 负责输入</li>
+<li>journal agent 负责转写和分流</li>
+<li>Obsidian 负责沉淀和整理</li>
+<li>Quartz 负责公开发布</li>
+</ul>
+<p>我不想让一个 agent 既负责聊天，又负责记日志，还顺手负责发布内容。那种“全能感”看着很爽，最后往往最乱。</p>
+<hr/>
+<h2 id="为什么我决定用-telegram-topic而不是把一切都塞进同一个聊天入口">为什么我决定用 Telegram Topic，而不是把一切都塞进同一个聊天入口<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#为什么我决定用-telegram-topic而不是把一切都塞进同一个聊天入口" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>一开始我也想过，干脆都放在同一个 Telegram 聊天里算了。</p>
+<p>但很快我就意识到，这样上下文会非常脏。</p>
+<p>我可能上午在聊仓库结构，下午在丢语音日志，晚上又想让它帮我写 blog。所有东西混在同一个会话里，agent 很容易误判，我自己回看也会非常痛苦。</p>
+<p>所以我最后决定：</p>
+<h3 id="把-telegram-forum-topics-当作不同用途的入口">把 Telegram forum topics 当作不同用途的入口<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#把-telegram-forum-topics-当作不同用途的入口" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>例如：</p>
+<ul>
+<li><code>主助手</code>：日常聊天、排障、任务处理</li>
+<li><code>日志记录</code>：语音、日记、碎片输入</li>
+<li>如果之后需要，还可以再加一个 <code>写作整理</code> topic</li>
+</ul>
+<p>这样一来，topic 本身就是一种语义分区。</p>
+<hr/>
+<h2 id="我怎么定义这个独立的-journal-agent">我怎么定义这个独立的 journal agent<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#我怎么定义这个独立的-journal-agent" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>我给这个 agent 的定位非常克制。</p>
+<p>它不是陪聊型 agent，也不是全能助手，而是一个：</p>
+<p><strong>记录员 / 整理员 / 输入分流器</strong></p>
+<p>它应该负责的是：</p>
+<ul>
+<li>收语音</li>
+<li>转文本</li>
+<li>写文件</li>
+<li>摘要整理</li>
+<li>必要时输出 blog 草稿</li>
+</ul>
+<p>它不应该负责的是：</p>
+<ul>
+<li>泛聊天</li>
+<li>技术排障</li>
+<li>OpenClaw 配置解释</li>
+<li>Quartz 运维</li>
+<li>广泛的研究讨论</li>
+</ul>
+<p>这一步其实特别重要。</p>
+<p>因为一旦职责不清，记录员很快就会变成什么都想答一嘴的“半主助手”，最后写日志也不稳，聊天也不专。</p>
+<hr/>
+<h2 id="我给-obsidian-设计的目录边界">我给 Obsidian 设计的目录边界<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#我给-obsidian-设计的目录边界" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>为了让这条链路真正可用，我把内容层重新拆成了几块：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>vault/</span></span>
+<span data-line><span>├── daily/</span></span>
+<span data-line><span>├── inbox/</span></span>
+<span data-line><span>│   ├── voice/</span></span>
+<span data-line><span>│   └── clippings/</span></span>
+<span data-line><span>├── drafts/</span></span>
+<span data-line><span>│   ├── blog/</span></span>
+<span data-line><span>│   └── notes/</span></span>
+<span data-line><span>└── publish/</span></span>
+<span data-line><span>    └── public/</span></span></code></pre></figure>
+<p>对应关系很明确：</p>
+<ul>
+<li><code>daily/</code>：当天摘要、反思、行动项</li>
+<li><code>inbox/voice/</code>：语音原始转写</li>
+<li><code>inbox/clippings/</code>：链接、资料、摘录</li>
+<li><code>drafts/blog/</code>：博客草稿</li>
+<li><code>publish/public/</code>：准备发布的内容</li>
+</ul>
+<p>这套结构的价值在于：</p>
+<p><strong>输入先被接住，再被整理，而不是直接扔进正式笔记里。</strong></p>
+<hr/>
+<h2 id="真正麻烦的地方不是搭-agent而是驯服默认行为">真正麻烦的地方：不是搭 agent，而是驯服默认行为<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#真正麻烦的地方不是搭-agent而是驯服默认行为" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>做到这里时，我以为事情差不多了。结果真正难啃的部分才刚开始。</p>
+<h3 id="第一个坑telegram-topic-的可见性和-mention-行为">第一个坑：Telegram topic 的可见性和 mention 行为<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第一个坑telegram-topic-的可见性和-mention-行为" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>一开始 bot 在 topic 里根本不回。</p>
+<p>后来排查下来，我发现问题并不是 topic 路由没写，而是 Telegram 的 bot privacy 和 mention 机制本身就很别扭。调整之后，topic 总算能正常回消息了。</p>
+<h3 id="第二个坑journal-agent-没有写权限">第二个坑：journal agent 没有写权限<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第二个坑journal-agent-没有写权限" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>我给它单独配了 <code>journal</code> agent，也把 topic 绑定过去了，但它第一次尝试写日志时，发现自己只能看到只读路径。</p>
+<p>后来我又做了几轮调整：</p>
+<ul>
+<li>给它单独放开 workspace 写权限</li>
+<li>最后干脆关闭它的 sandbox，让它直接在主机 workspace 上工作</li>
+</ul>
+<h3 id="第三个坑它总把日志理解成-memoryyyyy-mm-ddmd">第三个坑：它总把“日志”理解成 <code>memory/YYYY-MM-DD.md</code><a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#第三个坑它总把日志理解成-memoryyyyy-mm-ddmd" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>这才是最顽固的问题。</p>
+<p>哪怕我已经：</p>
+<ul>
+<li>改了 <code>journal</code> 的规则文件</li>
+<li>给日志 topic 加了强制 system prompt</li>
+<li>新建了一个全新的测试 topic</li>
+</ul>
+<p>它依然会本能地把“记录到日志”理解为：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>memory/YYYY-MM-DD.md</span></span></code></pre></figure>
+<p>而不是我真正想要的：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>vault/daily/YYYY-MM-DD.md</span></span></code></pre></figure>
+<p>这说明了一个很现实的问题：</p>
+<p><strong>系统自己的默认记忆习惯，有时候比你后加的业务规则还顽固。</strong></p>
+<hr/>
+<h2 id="我最后是怎么继续压这个问题的">我最后是怎么继续压这个问题的<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#我最后是怎么继续压这个问题的" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>我做的最后一步，其实很有代表性：</p>
+<h3 id="不再让-journal-把-vault-当-workspace而是给它独立-workspace--明确的-vault-输出路径">不再让 journal 把 <code>vault/</code> 当 workspace，而是给它独立 workspace + 明确的 <code>vault/</code> 输出路径<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#不再让-journal-把-vault-当-workspace而是给它独立-workspace--明确的-vault-输出路径" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>也就是说，我把它的 workspace 从：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>/home/xpx/XPX_PKM</span></span></code></pre></figure>
+<p>改成了：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>/home/xpx/XPX_PKM/system/workspaces/journal</span></span></code></pre></figure>
+<p>同时要求它把用户内容明确写到：</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="text" data-theme="github-light github-dark"><code data-language="text" data-theme="github-light github-dark" style="display:grid;"><span data-line><span>/home/xpx/XPX_PKM/vault/...</span></span></code></pre></figure>
+<p>这个动作看起来不大，但逻辑上非常关键。</p>
+<p>因为只要 agent 一眼把 <code>vault/</code> 误当成自己的 home，它就迟早会在里面重新长出 <code>memory/</code>、<code>IDENTITY.md</code> 这类运行态文件。现在它自己的 continuity 回到独立 workspace，而 <code>vault/</code> 只剩：</p>
+<ul>
+<li><code>daily/</code></li>
+<li><code>inbox/</code></li>
+<li><code>drafts/</code></li>
+<li><code>publish/</code></li>
+</ul>
+<p>那它把“日志”理解成 <code>daily/</code> 的概率就会高很多。</p>
+<p>说白了，这一步不是在“讲道理”，而是在 <strong>改变它所处环境的默认值</strong>。</p>
+<hr/>
+<h2 id="这套方案到底解决了什么问题">这套方案到底解决了什么问题<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#这套方案到底解决了什么问题" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>到这里，我越来越确定：</p>
+<p>这件事的重点不是“我成功配了多少配置项”，而是它确实在解决几个很具体的问题。</p>
+<h3 id="1-让输入真正进入知识系统">1. 让输入真正进入知识系统<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#1-让输入真正进入知识系统" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>不是停留在 Telegram，而是有机会进入：</p>
+<ul>
+<li>daily</li>
+<li>voice inbox</li>
+<li>clippings</li>
+<li>blog draft</li>
+</ul>
+<h3 id="2-让语音有了可靠归宿">2. 让语音有了可靠归宿<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#2-让语音有了可靠归宿" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>语音不再只是聊天记录里的一段波形，而是可以进入文本、摘要，以及后续写作流程。</p>
+<h3 id="3-让不同类型的内容有明确边界">3. 让不同类型的内容有明确边界<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#3-让不同类型的内容有明确边界" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>日志不是素材，素材不是草稿，草稿不是公开内容。</p>
+<h3 id="4-让记录员-agent有了明确职责">4. 让“记录员 agent”有了明确职责<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#4-让记录员-agent有了明确职责" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>它不再什么都做，而是专门负责：</p>
+<ul>
+<li>收</li>
+<li>转</li>
+<li>写</li>
+<li>整</li>
+</ul>
+<h3 id="5-让发布层和私人内容真正分开">5. 让发布层和私人内容真正分开<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#5-让发布层和私人内容真正分开" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p>这套工作流最后可以接上 Quartz，但只发布 <code>publish/public/</code>，不会把私人内容一锅端上去。</p>
+<hr/>
+<h2 id="我最大的感受真正难的是改默认值">我最大的感受：真正难的是改“默认值”<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#我最大的感受真正难的是改默认值" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>这次让我印象最深的一点是：</p>
+<p>很多系统看起来都“能用”，但当你真的想把它变成自己的工作流时，你会发现自己其实一直在跟默认值打架。</p>
+<p>默认的 memory 习惯、默认的聊天上下文、默认的 topic 行为、默认的发布路径……</p>
+<p>这些默认值如果不改，系统就会一直试图把你拉回它熟悉的轨道。</p>
+<p>所以真正的工作不是“有没有 agent”，而是：</p>
+<p><strong>你有没有把它训练到足够贴近你自己的信息流。</strong></p>
+<hr/>
+<h2 id="接下来我还会继续验证什么">接下来我还会继续验证什么<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#接下来我还会继续验证什么" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>这套方案还没到“完美稳定”的程度，但已经进入一个非常值得继续打磨的阶段。</p>
+<p>我接下来最关注的是：</p>
+<ul>
+<li><code>journal</code> 在新的独立 workspace + <code>vault</code> 输出路径下，是否终于能把“记录到日志”稳定写进 <code>daily/</code></li>
+<li>语音能不能顺畅进入 <code>inbox/voice/</code> 和 <code>daily/</code></li>
+<li>能不能从 daily、clippings、voice 很自然地整理出 blog 草稿</li>
+</ul>
+<p>如果这几步都跑顺，那这套系统对我来说就不再只是一个实验，而会真正变成我日常写作和记录的一部分。</p>
+<hr/>
+<h2 id="结尾">结尾<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#结尾" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<p>如果要总结这次折腾，我觉得一句话就够了：</p>
+<p><strong>我不是在搭一个 bot，我是在搭一条从输入到沉淀、再到输出的个人知识流。</strong></p>
+<p>而这条流真正有价值的地方，不在于它多炫，而在于它终于开始解决那些很烦、但也很真实的问题：</p>
+<ul>
+<li>我说过的东西别丢</li>
+<li>我想过的东西别散</li>
+<li>我记下来的东西，最好真的能变成文章</li>
+</ul>
+<p>如果一个系统能做到这三点，它就已经不是玩具了。</p></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="graph"><h3>关系图谱</h3><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 55 55" fill="currentColor" xml:space="preserve"><path d="M49,0c-3.309,0-6,2.691-6,6c0,1.035,0.263,2.009,0.726,2.86l-9.829,9.829C32.542,17.634,30.846,17,29,17
+                s-3.542,0.634-4.898,1.688l-7.669-7.669C16.785,10.424,17,9.74,17,9c0-2.206-1.794-4-4-4S9,6.794,9,9s1.794,4,4,4
+                c0.74,0,1.424-0.215,2.019-0.567l7.669,7.669C21.634,21.458,21,23.154,21,25s0.634,3.542,1.688,4.897L10.024,42.562
+                C8.958,41.595,7.549,41,6,41c-3.309,0-6,2.691-6,6s2.691,6,6,6s6-2.691,6-6c0-1.035-0.263-2.009-0.726-2.86l12.829-12.829
+                c1.106,0.86,2.44,1.436,3.898,1.619v10.16c-2.833,0.478-5,2.942-5,5.91c0,3.309,2.691,6,6,6s6-2.691,6-6c0-2.967-2.167-5.431-5-5.91
+                v-10.16c1.458-0.183,2.792-0.759,3.898-1.619l7.669,7.669C41.215,39.576,41,40.26,41,41c0,2.206,1.794,4,4,4s4-1.794,4-4
+                s-1.794-4-4-4c-0.74,0-1.424,0.215-2.019,0.567l-7.669-7.669C36.366,28.542,37,26.846,37,25s-0.634-3.542-1.688-4.897l9.665-9.665
+                C46.042,11.405,47.451,12,49,12c3.309,0,6-2.691,6-6S52.309,0,49,0z M11,9c0-1.103,0.897-2,2-2s2,0.897,2,2s-0.897,2-2,2
+                S11,10.103,11,9z M6,51c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S8.206,51,6,51z M33,49c0,2.206-1.794,4-4,4s-4-1.794-4-4
+                s1.794-4,4-4S33,46.794,33,49z M29,31c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S32.309,31,29,31z M47,41c0,1.103-0.897,2-2,2
+                s-2-0.897-2-2s0.897-2,2-2S47,39.897,47,41z M49,10c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S51.206,10,49,10z"></path></svg></button></div><div class="global-graph-outer"><div class="global-graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:-1,&quot;scale&quot;:0.9,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.2,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:true,&quot;enableRadial&quot;:true}"></div></div></div><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-0" aria-expanded="true"><h3>目录</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-1" class="toc-content overflow"><li class="depth-0"><a href="#我是怎么搭建一个-telegram-日志整理-agent并把-topic-工作流接进-obsidian-的" data-for="我是怎么搭建一个-telegram-日志整理-agent并把-topic-工作流接进-obsidian-的">我是怎么搭建一个 Telegram 日志整理 Agent，并把 Topic 工作流接进 Obsidian 的</a></li><li class="depth-1"><a href="#我想解决的几个真实痛点" data-for="我想解决的几个真实痛点">我想解决的几个真实痛点</a></li><li class="depth-2"><a href="#1-输入很多但沉淀断裂" data-for="1-输入很多但沉淀断裂">1. 输入很多，但沉淀断裂</a></li><li class="depth-2"><a href="#2-语音特别容易说完就算" data-for="2-语音特别容易说完就算">2. 语音特别容易“说完就算”</a></li><li class="depth-2"><a href="#3-日志素材草稿正式内容总是混在一起" data-for="3-日志素材草稿正式内容总是混在一起">3. 日志、素材、草稿、正式内容总是混在一起</a></li><li class="depth-1"><a href="#我的目标方案" data-for="我的目标方案">我的目标方案</a></li><li class="depth-1"><a href="#为什么我决定用-telegram-topic而不是把一切都塞进同一个聊天入口" data-for="为什么我决定用-telegram-topic而不是把一切都塞进同一个聊天入口">为什么我决定用 Telegram Topic，而不是把一切都塞进同一个聊天入口</a></li><li class="depth-2"><a href="#把-telegram-forum-topics-当作不同用途的入口" data-for="把-telegram-forum-topics-当作不同用途的入口">把 Telegram forum topics 当作不同用途的入口</a></li><li class="depth-1"><a href="#我怎么定义这个独立的-journal-agent" data-for="我怎么定义这个独立的-journal-agent">我怎么定义这个独立的 journal agent</a></li><li class="depth-1"><a href="#我给-obsidian-设计的目录边界" data-for="我给-obsidian-设计的目录边界">我给 Obsidian 设计的目录边界</a></li><li class="depth-1"><a href="#真正麻烦的地方不是搭-agent而是驯服默认行为" data-for="真正麻烦的地方不是搭-agent而是驯服默认行为">真正麻烦的地方：不是搭 agent，而是驯服默认行为</a></li><li class="depth-2"><a href="#第一个坑telegram-topic-的可见性和-mention-行为" data-for="第一个坑telegram-topic-的可见性和-mention-行为">第一个坑：Telegram topic 的可见性和 mention 行为</a></li><li class="depth-2"><a href="#第二个坑journal-agent-没有写权限" data-for="第二个坑journal-agent-没有写权限">第二个坑：journal agent 没有写权限</a></li><li class="depth-2"><a href="#第三个坑它总把日志理解成-memoryyyyy-mm-ddmd" data-for="第三个坑它总把日志理解成-memoryyyyy-mm-ddmd">第三个坑：它总把“日志”理解成 memory/YYYY-MM-DD.md</a></li><li class="depth-1"><a href="#我最后是怎么继续压这个问题的" data-for="我最后是怎么继续压这个问题的">我最后是怎么继续压这个问题的</a></li><li class="depth-2"><a href="#不再让-journal-把-vault-当-workspace而是给它独立-workspace--明确的-vault-输出路径" data-for="不再让-journal-把-vault-当-workspace而是给它独立-workspace--明确的-vault-输出路径">不再让 journal 把 vault/ 当 workspace，而是给它独立 workspace + 明确的 vault/ 输出路径</a></li><li class="depth-1"><a href="#这套方案到底解决了什么问题" data-for="这套方案到底解决了什么问题">这套方案到底解决了什么问题</a></li><li class="depth-2"><a href="#1-让输入真正进入知识系统" data-for="1-让输入真正进入知识系统">1. 让输入真正进入知识系统</a></li><li class="depth-2"><a href="#2-让语音有了可靠归宿" data-for="2-让语音有了可靠归宿">2. 让语音有了可靠归宿</a></li><li class="depth-2"><a href="#3-让不同类型的内容有明确边界" data-for="3-让不同类型的内容有明确边界">3. 让不同类型的内容有明确边界</a></li><li class="depth-2"><a href="#4-让记录员-agent有了明确职责" data-for="4-让记录员-agent有了明确职责">4. 让“记录员 agent”有了明确职责</a></li><li class="depth-2"><a href="#5-让发布层和私人内容真正分开" data-for="5-让发布层和私人内容真正分开">5. 让发布层和私人内容真正分开</a></li><li class="depth-1"><a href="#我最大的感受真正难的是改默认值" data-for="我最大的感受真正难的是改默认值">我最大的感受：真正难的是改“默认值”</a></li><li class="depth-1"><a href="#接下来我还会继续验证什么" data-for="接下来我还会继续验证什么">接下来我还会继续验证什么</a></li><li class="depth-1"><a href="#结尾" data-for="结尾">结尾</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script src="../postscript.js" type="module" data-persist="true"></script></html>
